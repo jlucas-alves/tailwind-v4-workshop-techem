@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tailwind v4 Crash Course — Techem</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  :root {
+    --bg: #09090b;
+    --bg-card: rgba(255,255,255,0.03);
+    --border: rgba(255,255,255,0.08);
+    --text: #d4d4d8;
+    --text-dim: #71717a;
+    --text-bright: #fafafa;
+    --blue: #3b82f6;
+    --cyan: #06b6d4;
+    --violet: #8b5cf6;
+    --emerald: #10b981;
+    --amber: #f59e0b;
+    --rose: #f43f5e;
+    --orange: #f97316;
+    --indigo: #6366f1;
+    --pink: #ec4899;
+    --lime: #84cc16;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; }
+  body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); }
+
+  .deck { width: 100vw; height: 100vh; position: relative; }
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; justify-content: safe center;
+    padding: 5vh 8vw;
+    opacity: 0; transform: translateX(60px);
+    pointer-events: none;
+    transition: opacity 0.45s cubic-bezier(0.4,0,0.2,1), transform 0.45s cubic-bezier(0.4,0,0.2,1);
+    overflow-y: auto;
+    scroll-padding-top: 2vh;
+  }
+  .slide.active { opacity: 1; transform: translateX(0); pointer-events: auto; }
+
+  .progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: linear-gradient(90deg, var(--cyan), var(--blue), var(--violet));
+    transition: width 0.4s ease; z-index: 100;
+  }
+
+  .nav { position: fixed; bottom: 2rem; right: 3rem; display: flex; align-items: center; gap: 14px; z-index: 100; }
+  .nav-btn {
+    width: 38px; height: 38px; border-radius: 9px;
+    border: 1px solid var(--border); background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(10px); color: var(--text); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; font-size: 0.9rem;
+  }
+  .nav-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+  .nav-btn:disabled { opacity: 0.25; cursor: default; }
+  .nav-btn:disabled:hover { border-color: var(--border); color: var(--text); }
+  .nav-counter { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--text-dim); min-width: 46px; text-align: center; }
+
+  .dots { position: fixed; bottom: 2rem; left: 3rem; display: flex; gap: 5px; z-index: 100; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); transition: all 0.3s; cursor: pointer; }
+  .dot.active { background: var(--cyan); width: 18px; border-radius: 3px; }
+
+  .kbd-hint { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); font-size: 0.65rem; color: var(--text-dim); display: flex; gap: 12px; z-index: 100; }
+  .kbd-hint kbd { padding: 2px 7px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; }
+
+  .sl { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 0.7rem; display: flex; align-items: center; gap: 10px; }
+  .sl::before { content: ''; width: 18px; height: 1px; }
+  .sl.orange { color: var(--orange); } .sl.orange::before { background: var(--orange); }
+  .sl.violet { color: var(--violet); } .sl.violet::before { background: var(--violet); }
+  .sl.blue { color: var(--blue); } .sl.blue::before { background: var(--blue); }
+  .sl.emerald { color: var(--emerald); } .sl.emerald::before { background: var(--emerald); }
+  .sl.amber { color: var(--amber); } .sl.amber::before { background: var(--amber); }
+  .sl.rose { color: var(--rose); } .sl.rose::before { background: var(--rose); }
+  .sl.cyan { color: var(--cyan); } .sl.cyan::before { background: var(--cyan); }
+  .sl.indigo { color: var(--indigo); } .sl.indigo::before { background: var(--indigo); }
+  .sl.pink { color: var(--pink); } .sl.pink::before { background: var(--pink); }
+  .sl.lime { color: var(--lime); } .sl.lime::before { background: var(--lime); }
+
+  h1 { font-size: clamp(2.5rem,5vw,4.5rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 1rem; }
+  h2 { font-size: clamp(1.6rem,3vw,2.6rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 0.8rem; color: var(--text-bright); }
+  .sub { font-size: clamp(0.9rem,1.3vw,1.1rem); color: var(--text-dim); max-width: 680px; line-height: 1.65; margin-bottom: 1.8rem; }
+  .grad { background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #8b5cf6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start; }
+  .three { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.2rem; }
+  .four { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 1rem; }
+  @media (max-width: 900px) { .two, .three, .four { grid-template-columns: 1fr; } }
+
+  .c { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 1.4rem; position: relative; overflow: hidden; }
+  .c::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; }
+  .c.go::before { background: linear-gradient(90deg, transparent, var(--orange), transparent); }
+  .c.gv::before { background: linear-gradient(90deg, transparent, var(--violet), transparent); }
+  .c.gb::before { background: linear-gradient(90deg, transparent, var(--blue), transparent); }
+  .c.ge::before { background: linear-gradient(90deg, transparent, var(--emerald), transparent); }
+  .c.ga::before { background: linear-gradient(90deg, transparent, var(--amber), transparent); }
+  .c.gr::before { background: linear-gradient(90deg, transparent, var(--rose), transparent); }
+  .c.gc::before { background: linear-gradient(90deg, transparent, var(--cyan), transparent); }
+  .c.gi::before { background: linear-gradient(90deg, transparent, var(--indigo), transparent); }
+  .c.gp::before { background: linear-gradient(90deg, transparent, var(--pink), transparent); }
+  .c.gl::before { background: linear-gradient(90deg, transparent, var(--lime), transparent); }
+
+  .c h3 { font-size: 0.95rem; font-weight: 700; color: var(--text-bright); margin-bottom: 0.4rem; }
+  .c p, .c li { font-size: 0.82rem; color: var(--text-dim); line-height: 1.55; }
+  .c ul { list-style: none; padding: 0; }
+  .c li { padding-left: 0.9rem; position: relative; margin-bottom: 0.25rem; }
+  .c li::before { content: ''; position: absolute; left: 0; top: 0.5rem; width: 4px; height: 4px; border-radius: 50%; background: var(--text-dim); }
+
+  .code {
+    background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 10px;
+    padding: 1rem 1.3rem; font-family: 'JetBrains Mono', monospace;
+    font-size: 0.74rem; line-height: 1.65; overflow-x: auto; color: var(--text-dim); white-space: pre;
+  }
+  .code .kw { color: var(--violet); } .code .ty { color: var(--cyan); } .code .str { color: var(--emerald); }
+  .code .cm { color: rgba(113,113,122,0.45); } .code .fn { color: var(--blue); } .code .num { color: var(--amber); }
+  .code .op { color: var(--rose); } .code .or { color: var(--orange); } .code .hl { background: rgba(6,182,212,0.1); border-radius: 3px; }
+
+  .tag { display: inline-block; padding: 2px 7px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 5px; font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; margin: 2px; }
+  .tag.o { border-color: rgba(249,115,22,0.3); color: var(--orange); }
+  .tag.v { border-color: rgba(139,92,246,0.3); color: var(--violet); }
+  .tag.b { border-color: rgba(59,130,246,0.3); color: var(--blue); }
+  .tag.e { border-color: rgba(16,185,129,0.3); color: var(--emerald); }
+  .tag.a { border-color: rgba(245,158,11,0.3); color: var(--amber); }
+  .tag.r { border-color: rgba(244,63,94,0.3); color: var(--rose); }
+  .tag.c { border-color: rgba(6,182,212,0.3); color: var(--cyan); }
+  .tag.p { border-color: rgba(236,72,153,0.3); color: var(--pink); }
+
+  .stats { display: flex; gap: 2rem; flex-wrap: wrap; margin-top: 1.5rem; }
+  .st { text-align: center; }
+  .st .v { font-family: 'JetBrains Mono', monospace; font-size: 1.8rem; font-weight: 800; line-height: 1; }
+  .st .l { font-size: 0.68rem; color: var(--text-dim); margin-top: 3px; }
+
+  .steps { display: flex; flex-direction: column; gap: 0.5rem; }
+  .step { display: grid; grid-template-columns: 36px 1fr; gap: 0.8rem; align-items: start; padding: 0.7rem 0; border-bottom: 1px solid var(--border); }
+  .step:last-child { border-bottom: none; }
+  .step-n { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 700; flex-shrink: 0; }
+  .step h4 { font-size: 0.85rem; font-weight: 700; color: var(--text-bright); }
+  .step p { font-size: 0.78rem; color: var(--text-dim); line-height: 1.5; margin-top: 2px; }
+
+  .diff { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .diff-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+
+  .agenda { display: flex; flex-direction: column; gap: 0; }
+  .agenda-item { display: grid; grid-template-columns: 72px 1fr; gap: 1rem; align-items: center; padding: 0.55rem 0; border-bottom: 1px solid var(--border); }
+  .agenda-item:last-child { border-bottom: none; }
+  .agenda-time { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--text-dim); }
+  .agenda-item h4 { font-size: 0.85rem; font-weight: 700; color: var(--text-bright); }
+  .agenda-item p { font-size: 0.75rem; color: var(--text-dim); }
+
+  .speed-bar { display: flex; flex-direction: column; gap: 0.7rem; margin: 0.8rem 0; }
+  .speed-row { display: grid; grid-template-columns: 90px 1fr 64px; gap: 0.8rem; align-items: center; font-size: 0.75rem; }
+  .speed-row .slabel { color: var(--text-dim); font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; }
+  .speed-row .bar-wrap { background: rgba(255,255,255,0.04); border-radius: 4px; height: 8px; overflow: hidden; }
+  .speed-row .bar-fill { height: 100%; border-radius: 4px; }
+  .speed-row .val { color: var(--text-bright); font-weight: 700; font-family: 'JetBrains Mono', monospace; text-align: right; font-size: 0.8rem; }
+
+  .repo-row { display: grid; grid-template-columns: 200px 1fr; gap: 1rem; align-items: start; padding: 0.8rem 0; border-bottom: 1px solid var(--border); }
+  .repo-row:last-child { border-bottom: none; }
+  .repo-name { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--text-bright); font-weight: 600; }
+  .repo-desc { font-size: 0.78rem; color: var(--text-dim); line-height: 1.5; }
+
+  .check { color: var(--emerald); font-weight: 700; }
+  .cross { color: var(--rose); font-weight: 700; }
+  .warn { color: var(--amber); font-weight: 700; }
+
+  /* ===== Mobile only — max 640px ===== */
+  @media (max-width: 640px) {
+
+    /* Slide container: menos padding, espaço para nav em baixo */
+    .slide {
+      padding: 3.5vh 6vw 5.5rem;
+    }
+
+    /* Tipografia */
+    h1 { font-size: clamp(1.7rem, 9vw, 2.4rem); margin-bottom: 0.6rem; }
+    h2 { font-size: clamp(1.15rem, 5.5vw, 1.5rem); margin-bottom: 0.6rem; }
+    .sub { font-size: 0.83rem; margin-bottom: 1rem; line-height: 1.55; }
+    .sl { font-size: 0.58rem; margin-bottom: 0.5rem; }
+
+    /* Stats do title slide */
+    .stats { gap: 1rem 1.4rem; margin-top: 1rem; }
+    .st .v { font-size: 1.3rem; }
+    .st .l { font-size: 0.58rem; }
+
+    /* Todos os grids → coluna única */
+    .two  { grid-template-columns: 1fr; gap: 0.8rem; }
+    .three { grid-template-columns: 1fr; gap: 0.7rem; }
+    .four { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+    .diff { grid-template-columns: 1fr; gap: 0.7rem; }
+
+    /* Cards */
+    .c { padding: 0.85rem; }
+    .c h3 { font-size: 0.82rem; }
+    .c p, .c li { font-size: 0.72rem; }
+    .c li { margin-bottom: 0.18rem; }
+
+    /* Code blocks */
+    .code { font-size: 0.62rem; padding: 0.7rem 0.85rem; line-height: 1.55; }
+
+    /* Tags */
+    .tag { font-size: 0.58rem; padding: 1px 5px; }
+
+    /* Agenda */
+    .agenda-item { grid-template-columns: 52px 1fr; gap: 0.6rem; padding: 0.4rem 0; }
+    .agenda-time { font-size: 0.63rem; }
+    .agenda-item h4 { font-size: 0.76rem; }
+    .agenda-item p  { font-size: 0.67rem; }
+
+    /* Benchmark bars */
+    .speed-row { grid-template-columns: 50px 1fr 48px; gap: 0.5rem; }
+    .speed-row .slabel { font-size: 0.62rem; }
+    .speed-row .val { font-size: 0.7rem; }
+
+    /* Steps */
+    .step { padding: 0.45rem 0; }
+    .step h4 { font-size: 0.76rem; }
+    .step p  { font-size: 0.7rem; }
+    .step-n { width: 22px; height: 22px; font-size: 0.62rem; }
+
+    /* Repo rows */
+    .repo-row { grid-template-columns: 1fr; gap: 0.35rem; padding: 0.6rem 0; }
+    .repo-name { font-size: 0.78rem; }
+    .repo-desc { font-size: 0.7rem; line-height: 1.6; }
+
+    /* Diff labels */
+    .diff-label { font-size: 0.58rem; }
+
+    /* Navegação: menos espaço, sem hint de teclado */
+    .kbd-hint { display: none; }
+    .nav { bottom: 0.75rem; right: 0.75rem; gap: 8px; }
+    .nav-btn { width: 30px; height: 30px; font-size: 0.8rem; border-radius: 7px; }
+    .nav-counter { font-size: 0.65rem; min-width: 38px; }
+    .dots { bottom: 0.75rem; left: 0.75rem; gap: 4px; }
+    .dot { width: 5px; height: 5px; }
+    .dot.active { width: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress"></div>
+<div class="deck" id="deck">
+
+<!-- ==================== 1: Title ==================== -->
+<div class="slide active" data-slide="0">
+  <div class="sl cyan">Techem Frontend Guild</div>
+  <h1 class="grad">Tailwind v4<br>Crash Course</h1>
+  <p class="sub">
+    From utility-first fundamentals to the new Oxide engine — and a live AI-powered migration of a real <span style="color:var(--text-bright);">ui-experience-kit</span> component from SCSS to Tailwind v4.
+  </p>
+  <div class="stats">
+    <div class="st"><div class="v" style="color:var(--cyan);">2–3h</div><div class="l">Duration</div></div>
+    <div class="st"><div class="v" style="color:var(--blue);">5×</div><div class="l">Faster full builds</div></div>
+    <div class="st"><div class="v" style="color:var(--violet);">100×</div><div class="l">Faster incremental</div></div>
+    <div class="st"><div class="v" style="color:var(--emerald);">96</div><div class="l">.module.scss files left</div></div>
+    <div class="st"><div class="v" style="color:var(--amber);">0</div><div class="l">SCSS vars to worry about</div></div>
+  </div>
+  <div style="margin-top:2rem; font-size:0.8rem; color:var(--text-dim);">Moderator: <strong style="color:var(--text-bright);">Lucas Alves</strong></div>
+</div>
+
+<!-- ==================== 2: Agenda ==================== -->
+<div class="slide" data-slide="1">
+  <div class="sl violet">Today</div>
+  <h2>What we'll cover</h2>
+
+  <div class="two">
+    <div class="agenda">
+      <div class="agenda-item">
+        <div><div class="agenda-time">0:00</div><div style="font-size:0.6rem;color:var(--cyan);">5 min</div></div>
+        <div><h4>Tailwind primer</h4><p>Utility-first in 5 minutes — for newcomers</p></div>
+      </div>
+      <div class="agenda-item">
+        <div><div class="agenda-time">0:05</div><div style="font-size:0.6rem;color:var(--cyan);">15 min</div></div>
+        <div><h4>Why v4? The full story</h4><p>What Tailwind rebuilt and why</p></div>
+      </div>
+      <div class="agenda-item">
+        <div><div class="agenda-time">0:20</div><div style="font-size:0.6rem;color:var(--cyan);">20 min</div></div>
+        <div><h4>Oxide engine & benchmarks</h4><p>Rust / Lightning CSS, real numbers</p></div>
+      </div>
+      <div class="agenda-item">
+        <div><div class="agenda-time">0:40</div><div style="font-size:0.6rem;color:var(--cyan);">25 min</div></div>
+        <div><h4>New API: CSS-first config</h4><p>@theme, CSS variables, new import syntax</p></div>
+      </div>
+      <div class="agenda-item">
+        <div><div class="agenda-time">1:05</div><div style="font-size:0.6rem;color:var(--cyan);">20 min</div></div>
+        <div><h4>New utilities & variants</h4><p>Container queries, dvh, not-*, starting:</p></div>
+      </div>
+      <div class="agenda-item">
+        <div><div class="agenda-time">1:25</div><div style="font-size:0.6rem;color:var(--cyan);">15 min</div></div>
+        <div><h4>Migration & gotchas</h4><p>upgrade CLI, breaking changes</p></div>
+      </div>
+    </div>
+    <div class="agenda">
+      <div class="agenda-item">
+        <div><div class="agenda-time">1:40</div><div style="font-size:0.6rem;color:var(--orange);">☕ 10m</div></div>
+        <div><h4>Break</h4><p></p></div>
+      </div>
+      <div class="agenda-item">
+        <div><div class="agenda-time">1:50</div><div style="font-size:0.6rem;color:var(--emerald);">15 min</div></div>
+        <div><h4>Our repos: where we stand</h4><p>ui-experience-kit, design-tokens, portal-frontend</p></div>
+      </div>
+      <div class="agenda-item">
+        <div><div class="agenda-time">2:05</div><div style="font-size:0.6rem;color:var(--pink);">25 min</div></div>
+        <div><h4>Live demo: Avatar migration</h4><p>Real DS component, AI-assisted, step by step</p></div>
+      </div>
+      <div class="agenda-item">
+        <div><div class="agenda-time">2:30</div><div style="font-size:0.6rem;color:var(--violet);">15 min</div></div>
+        <div><h4>You try it</h4><p>Pick any component, run the prompt, show your diff</p></div>
+      </div>
+      <div class="agenda-item">
+        <div><div class="agenda-time">2:45</div><div style="font-size:0.6rem;color:var(--text-dim);">15 min</div></div>
+        <div><h4>Q&A + Resources</h4><p>Discuss, share results, close</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 3: Tailwind Primer ==================== -->
+<div class="slide" data-slide="2">
+  <div class="sl emerald">5-min primer</div>
+  <h2>Tailwind in a nutshell<br><span style="color:var(--text-dim);font-size:0.55em;">skip if you already know it</span></h2>
+
+  <div class="two">
+    <div>
+      <p class="sub" style="margin-bottom:1rem;">Instead of writing named CSS classes, you compose utility classes directly in JSX. No context-switching, no naming things, no dead code.</p>
+      <div class="diff">
+        <div>
+          <div class="diff-label" style="color:var(--rose);">What we write today</div>
+          <div class="code" style="font-size:0.68rem;"><span class="cm">/* Avatar.module.scss */</span>
+<span class="ty">.AvatarRoot</span> {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 100%;
+  overflow: hidden;
+  background: <span class="fn">var</span>(<span class="ty">--d3x-white</span>);
+}</div>
+        </div>
+        <div>
+          <div class="diff-label" style="color:var(--emerald);">What we want instead</div>
+          <div class="code" style="font-size:0.68rem;"><span class="cm">{/* Avatar.tsx — no SCSS */}</span>
+&lt;<span class="ty">Avatar.Root</span> <span class="kw">className</span>=<span class="fn">clsx</span>(
+  <span class="str">"inline-flex items-center"</span>,
+  <span class="str">"rounded-full overflow-hidden"</span>,
+  <span class="str">"bg-[--d3x-white]"</span>,
+)&gt;
+  ...
+&lt;/<span class="ty">Avatar.Root</span>&gt;</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="c gc" style="margin-bottom:0.8rem;">
+        <h3>Why it works</h3>
+        <ul>
+          <li>No naming fatigue — no <code>.avatar-root-wrapper</code></li>
+          <li>CSS size doesn't grow with the project</li>
+          <li>Unused classes are never emitted</li>
+          <li>Constraint-based — spacing/colors from a design scale</li>
+          <li>Co-located: styles live with the component, always</li>
+        </ul>
+      </div>
+      <div class="c gr">
+        <h3>Common pushback</h3>
+        <ul>
+          <li>"The classNames look ugly" — you get used to it fast</li>
+          <li>"Hard to memorize" — IntelliSense has you covered</li>
+          <li>"Markup duplication" — extract components, not CSS classes</li>
+        </ul>
+        <p style="margin-top:0.5rem; color:var(--amber);">We already use <code>clsx()</code> — the mental model is the same.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 4: Why v4 ==================== -->
+<div class="slide" data-slide="3">
+  <div class="sl rose">The backstory</div>
+  <h2>Why did Tailwind<br>rebuild from scratch?</h2>
+  <p class="sub">v3 was solid — but PostCSS-only, required a JS config, and had a content detection system that needed manual upkeep. At scale, those cracks showed.</p>
+
+  <div class="three">
+    <div class="c gr">
+      <h3>Pain points in v3</h3>
+      <ul>
+        <li>Full builds took seconds on large apps</li>
+        <li><span class="tag r">tailwind.config.js</span> grew complex fast</li>
+        <li><span class="tag r">content</span> array needed manual maintenance</li>
+        <li>PostCSS plugin chain had real limits</li>
+        <li>No built-in container query support</li>
+        <li><span class="tag r">theme()</span> function felt unnatural in CSS</li>
+        <li>CSS cascade layers weren't first-class</li>
+      </ul>
+    </div>
+    <div class="c gc">
+      <h3>v4 design goals</h3>
+      <ul>
+        <li>Build performance at any project size</li>
+        <li>Configuration <em>in CSS</em> — where it belongs</li>
+        <li>Zero-config content detection</li>
+        <li>First-class Vite plugin, not PostCSS-first</li>
+        <li>Container queries out of the box</li>
+        <li>All tokens auto-become CSS custom properties</li>
+        <li>Lean on modern CSS instead of polyfilling it</li>
+      </ul>
+    </div>
+    <div class="c gv">
+      <h3>How they did it</h3>
+      <ul>
+        <li>Rewrote the engine in <strong style="color:var(--violet);">Rust</strong> via Lightning CSS</li>
+        <li>CSS-first config: <span class="tag v">@theme {}</span></li>
+        <li>New import: <span class="tag v">@import "tailwindcss"</span></li>
+        <li>Built-in <span class="tag v">@tailwindcss/vite</span> plugin</li>
+        <li>Auto content detection from import graph</li>
+        <li>Every token → CSS custom property automatically</li>
+        <li>P3 color gamut on all palette colors</li>
+      </ul>
+    </div>
+  </div>
+  <div style="margin-top:1.5rem; padding:0.8rem 1.2rem; background:rgba(6,182,212,0.05); border:1px solid rgba(6,182,212,0.15); border-radius:10px; font-size:0.8rem; color:var(--text-dim);">
+    "We rebuilt Tailwind CSS from the ground up, optimized for performance and flexibility." — Adam Wathan, Tailwind Labs
+  </div>
+</div>
+
+<!-- ==================== 5: Oxide Engine ==================== -->
+<div class="slide" data-slide="4">
+  <div class="sl cyan">The engine</div>
+  <h2>Oxide: Built on<br>Lightning CSS</h2>
+  <p class="sub">The v3 engine was JavaScript + PostCSS. Oxide processes CSS through a Rust-based pipeline — that's where all the performance comes from.</p>
+
+  <div class="two">
+    <div>
+      <div class="c gc" style="margin-bottom:1rem;">
+        <h3>What Lightning CSS gives you</h3>
+        <ul>
+          <li>Parses, transforms, and minifies CSS at native speed</li>
+          <li>Handles vendor prefixing automatically (bye, autoprefixer)</li>
+          <li>Understands modern CSS: nesting, cascade layers, oklch</li>
+          <li>Replaces PostCSS + autoprefixer + cssnano in one tool</li>
+          <li>Maintained by the Parcel team — battle-tested at scale</li>
+        </ul>
+      </div>
+      <div class="c gb">
+        <h3>Smart content detection</h3>
+        <p>v3 required a <span class="tag">content</span> array listing every file glob. v4 follows your actual module import graph — it knows what to scan.</p>
+        <div class="code" style="margin-top:0.6rem; font-size:0.68rem;"><span class="cm">/* v4 — no content array needed */</span>
+<span class="kw">@import</span> <span class="str">"tailwindcss"</span>;
+
+<span class="cm">/* Override when needed */</span>
+<span class="kw">@source</span> <span class="str">"./src/legacy/**/*.html"</span>;</div>
+      </div>
+    </div>
+    <div>
+      <h3 style="color:var(--text-bright); font-size:0.9rem; margin-bottom:0.8rem;">The pipeline, before and after</h3>
+      <div style="display:flex; flex-direction:column; gap:0.8rem;">
+        <div style="padding:0.8rem 1rem; background:rgba(244,63,94,0.05); border:1px solid rgba(244,63,94,0.2); border-radius:10px;">
+          <div style="font-size:0.7rem; font-weight:700; color:var(--rose); margin-bottom:0.5rem;">v3 — all JavaScript</div>
+          <div style="font-size:0.75rem; color:var(--text-dim); font-family:'JetBrains Mono',monospace; line-height:1.9;">
+            JS config → PostCSS plugin → Autoprefixer → cssnano → Output
+          </div>
+        </div>
+        <div style="padding:0.8rem 1rem; background:rgba(6,182,212,0.05); border:1px solid rgba(6,182,212,0.2); border-radius:10px;">
+          <div style="font-size:0.7rem; font-weight:700; color:var(--cyan); margin-bottom:0.5rem;">v4 — Rust core</div>
+          <div style="font-size:0.75rem; color:var(--text-dim); font-family:'JetBrains Mono',monospace; line-height:1.9;">
+            CSS @theme → Lightning CSS (Rust) → Output
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:0.8rem; padding:0.7rem 1rem; background:rgba(139,92,246,0.05); border:1px solid rgba(139,92,246,0.15); border-radius:10px; font-size:0.78rem; color:var(--text-dim);">
+        <strong style="color:var(--violet);">ui-experience-kit already uses</strong> <code>@tailwindcss/postcss</code> v4 — so the pipeline is wired. The SCSS files are the remaining work.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 6: Benchmarks ==================== -->
+<div class="slide" data-slide="5">
+  <div class="sl lime">Benchmarks</div>
+  <h2>The numbers<br>speak for themselves</h2>
+  <p class="sub">Measured on the Tailwind CSS documentation site — a large real-world project. These ratios hold across projects of different sizes.</p>
+
+  <div class="two">
+    <div>
+      <h3 style="color:var(--text-bright); font-size:0.9rem; margin-bottom:0.7rem;">Full build</h3>
+      <div class="speed-bar">
+        <div class="speed-row">
+          <div class="slabel">v3.4</div>
+          <div class="bar-wrap"><div class="bar-fill" style="width:100%; background:var(--rose);"></div></div>
+          <div class="val" style="color:var(--rose);">378 ms</div>
+        </div>
+        <div class="speed-row">
+          <div class="slabel">v4.0</div>
+          <div class="bar-wrap"><div class="bar-fill" style="width:19%; background:var(--cyan);"></div></div>
+          <div class="val" style="color:var(--cyan);">71 ms</div>
+        </div>
+      </div>
+
+      <h3 style="color:var(--text-bright); font-size:0.9rem; margin-bottom:0.7rem; margin-top:1.2rem;">Incremental build (watch mode)</h3>
+      <div class="speed-bar">
+        <div class="speed-row">
+          <div class="slabel">v3.4</div>
+          <div class="bar-wrap"><div class="bar-fill" style="width:100%; background:var(--rose);"></div></div>
+          <div class="val" style="color:var(--rose);">44 ms</div>
+        </div>
+        <div class="speed-row">
+          <div class="slabel">v4.0</div>
+          <div class="bar-wrap"><div class="bar-fill" style="width:2%; background:var(--cyan); min-width:4px;"></div></div>
+          <div class="val" style="color:var(--cyan);">~0.7 ms</div>
+        </div>
+      </div>
+      <p style="margin-top:0.8rem; font-size:0.72rem; color:var(--text-dim);">Source: Tailwind CSS v4.0 announcement — January 2025</p>
+    </div>
+    <div>
+      <div class="c gc" style="margin-bottom:0.8rem;">
+        <h3>Why incremental is so much faster</h3>
+        <p>v4 tracks which utilities were generated per-file. When you save a component, only that file's classes are re-evaluated — not the entire class scanner. In practice: instant hot reload.</p>
+      </div>
+      <div class="c ge" style="margin-bottom:0.8rem;">
+        <h3>Real dev impact</h3>
+        <ul>
+          <li>Hot reload feels instant — even in a large monorepo</li>
+          <li>CI build times cut significantly</li>
+          <li>No more waiting 3s on every component save</li>
+          <li>Performance scales linearly, not exponentially</li>
+        </ul>
+      </div>
+      <div class="c gv">
+        <h3>No PurgeCSS phase</h3>
+        <p>v3 generated all utilities, then purged unused ones. v4 only generates what it detects in your source — the purge step is gone.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 7: CSS-First Config ==================== -->
+<div class="slide" data-slide="6">
+  <div class="sl violet">New API</div>
+  <h2>CSS-first configuration<br>with @theme</h2>
+  <p class="sub">The biggest developer-facing change: all configuration moves from <code>tailwind.config.js</code> into your CSS file. Design tokens live where they belong.</p>
+
+  <div class="diff" style="margin-bottom:1.5rem;">
+    <div>
+      <div class="diff-label" style="color:var(--rose);">v3 — tailwind.config.js</div>
+      <div class="code" style="font-size:0.68rem;"><span class="cm">// tailwind.config.js</span>
+<span class="kw">module</span>.<span class="fn">exports</span> = {
+  <span class="ty">content</span>: [<span class="str">'./src/**/*.tsx'</span>],
+  <span class="ty">theme</span>: {
+    <span class="ty">extend</span>: {
+      <span class="ty">colors</span>: {
+        <span class="str">'primary-500'</span>: <span class="str">'#E20613'</span>,
+        <span class="str">'primary-600'</span>: <span class="str">'#B4050F'</span>,
+      },
+      <span class="ty">fontFamily</span>: {
+        <span class="str">sans</span>: [<span class="str">'Inter'</span>, <span class="str">'sans-serif'</span>],
+      },
+    }
+  }
+}</div>
+    </div>
+    <div>
+      <div class="diff-label" style="color:var(--emerald);">v4 — globals.css (from design-tokens)</div>
+      <div class="code" style="font-size:0.68rem;"><span class="cm">/* generated by odp-lib-ts-design-tokens */</span>
+<span class="kw">@import</span> <span class="str">"tailwindcss"</span>;
+
+<span class="kw">@theme</span> {
+  <span class="ty">--color-primary-500</span>: <span class="num">#E20613</span>;
+  <span class="ty">--color-primary-600</span>: <span class="num">#B4050F</span>;
+  <span class="ty">--color-primary-100</span>: <span class="num">#FFA7AC</span>;
+  <span class="ty">--color-white</span>: <span class="num">#FFFFFF</span>;
+
+  <span class="ty">--font-sans</span>: <span class="str">'Inter'</span>, sans-serif;
+}
+<span class="cm">/* No JS file. design-tokens generates this. */</span></div>
+    </div>
+  </div>
+
+  <div class="three">
+    <div class="c gc">
+      <h3>Naming convention</h3>
+      <p>Tailwind reads the namespace automatically: <span class="tag c">--color-*</span> → color utilities, <span class="tag c">--spacing-*</span> → spacing, <span class="tag c">--font-*</span> → font-family. Your existing token names already follow this pattern.</p>
+    </div>
+    <div class="c ge">
+      <h3>design-tokens already outputs @theme</h3>
+      <p>The <span class="tag e">odp-lib-ts-design-tokens</span> repo uses Style Dictionary to generate CSS variables. It already produces a <span class="tag e">@theme</span> block for Tailwind v4. The pipeline is in place.</p>
+    </div>
+    <div class="c gv">
+      <h3>Extend vs. replace</h3>
+      <p>Default <span class="tag v">@theme</span> adds tokens on top of Tailwind's defaults. Set a var to <span class="tag">initial</span> to reset a namespace. Use <span class="tag v">@theme default {}</span> shorthand to replace entirely.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 8: Import + CSS Vars ==================== -->
+<div class="slide" data-slide="7">
+  <div class="sl cyan">Import & Variables</div>
+  <h2>One import.<br>Everything becomes a CSS variable.</h2>
+
+  <div class="two">
+    <div>
+      <div class="diff-label" style="color:var(--rose); margin-bottom:0.4rem;">v3 — three directives</div>
+      <div class="code" style="margin-bottom:1rem;"><span class="kw">@tailwind</span> <span class="str">base</span>;
+<span class="kw">@tailwind</span> <span class="str">components</span>;
+<span class="kw">@tailwind</span> <span class="str">utilities</span>;</div>
+
+      <div class="diff-label" style="color:var(--emerald); margin-bottom:0.4rem;">v4 — one import</div>
+      <div class="code" style="margin-bottom:1rem;"><span class="kw">@import</span> <span class="str">"tailwindcss"</span>;
+<span class="cm">/* includes base + components + utilities */</span>
+<span class="cm">/* via @layer cascade automatically       */</span></div>
+
+      <div class="c gb">
+        <h3>Fine-grained layers</h3>
+        <div class="code" style="margin-top:0.5rem; font-size:0.68rem;"><span class="kw">@import</span> <span class="str">"tailwindcss/preflight"</span>;
+<span class="kw">@import</span> <span class="str">"tailwindcss/utilities"</span>;</div>
+        <p style="margin-top:0.4rem;">Use when integrating into a CSS architecture that already has its own reset layer (like our kit).</p>
+      </div>
+    </div>
+    <div>
+      <div class="c gc" style="margin-bottom:0.8rem;">
+        <h3>All tokens auto-become CSS variables</h3>
+        <p>Every value in <span class="tag c">@theme</span> is exposed on <span class="tag">:root</span> automatically. No plugin needed. Your existing <code>var(--color-primary-500)</code> calls in SCSS <em>already work</em> as Tailwind CSS vars.</p>
+        <div class="code" style="margin-top:0.6rem; font-size:0.68rem;"><span class="cm">/* Auto-generated by v4 on :root */</span>
+<span class="ty">--color-primary-500</span>: <span class="num">#E20613</span>;
+<span class="ty">--color-primary-600</span>: <span class="num">#B4050F</span>;
+<span class="ty">--color-white</span>: <span class="num">#FFFFFF</span>;
+<span class="ty">--d3x-white</span>: <span class="num">#FFFFFF</span>;
+<span class="ty">--d3x-gray-700</span>: <span class="num">...</span>;</div>
+      </div>
+      <div class="c gv">
+        <h3>Use tokens in Tailwind classes</h3>
+        <div class="code" style="margin-top:0.5rem; font-size:0.68rem;"><span class="cm">/* Arbitrary CSS var value */</span>
+<span class="kw">className</span>=<span class="str">"bg-[--color-primary-500]"</span>
+<span class="kw">className</span>=<span class="str">"text-[--d3x-white]"</span>
+<span class="kw">className</span>=<span class="str">"border-[--color-primary-500]"</span>
+
+<span class="cm">/* Or if token is in @theme namespace: */</span>
+<span class="kw">className</span>=<span class="str">"bg-primary-500"</span>  <span class="cm">← uses --color-primary-500</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 9: New Utilities ==================== -->
+<div class="slide" data-slide="8">
+  <div class="sl orange">New utilities</div>
+  <h2>What v4 adds<br>to your toolbox</h2>
+  <p class="sub">Most of these required external plugins or JS workarounds in v3. In v4 they're first-class — no install, no config.</p>
+
+  <div class="four">
+    <div class="c go">
+      <h3>Container queries</h3>
+      <p>No more <span class="tag">@tailwindcss/container-queries</span> plugin. Built in natively.</p>
+      <div class="code" style="margin-top:0.6rem; font-size:0.65rem;"><span class="cm">/* Mark the container */</span>
+&lt;<span class="ty">div</span> <span class="kw">className</span>=<span class="str">"@container"</span>&gt;
+  &lt;<span class="ty">Card</span> <span class="kw">className</span>=<span class="str">"
+    @md:flex-row
+    @lg:text-xl
+  "</span> /&gt;
+&lt;/<span class="ty">div</span>&gt;</div>
+    </div>
+    <div class="c gc">
+      <h3>Dynamic viewport units</h3>
+      <p>Mobile browser chrome breaks <span class="tag">100vh</span>. These don't.</p>
+      <div class="code" style="margin-top:0.6rem; font-size:0.65rem;"><span class="str">h-dvh</span>    <span class="cm">/* 100dvh dynamic */</span>
+<span class="str">min-h-svh</span> <span class="cm">/* small viewport */</span>
+<span class="str">max-h-lvh</span> <span class="cm">/* large viewport */</span>
+<span class="str">w-dvw</span>    <span class="cm">/* dynamic width  */</span></div>
+    </div>
+    <div class="c gv">
+      <h3>not-* variant</h3>
+      <p>Apply styles when a selector <em>doesn't</em> match — CSS <code>:not()</code> as a utility.</p>
+      <div class="code" style="margin-top:0.6rem; font-size:0.65rem;"><span class="str">not-hover:opacity-60</span>
+<span class="str">not-disabled:cursor-pointer</span>
+<span class="str">not-first:border-t</span>
+
+<span class="cm">/* Replaces complex SCSS: */</span>
+<span class="cm">/* &:hover:not(:disabled) */</span></div>
+    </div>
+    <div class="c ge">
+      <h3>in-* variant</h3>
+      <p>Style an element based on ancestor state — like <code>group-*</code> but for any arbitrary selector.</p>
+      <div class="code" style="margin-top:0.6rem; font-size:0.65rem;"><span class="str">in-[.loading]:opacity-50</span>
+<span class="str">in-data-active:font-bold</span>
+<span class="str">in-[nav]:text-sm</span></div>
+    </div>
+  </div>
+
+  <div class="three" style="margin-top:1rem;">
+    <div class="c ga">
+      <h3>starting: variant</h3>
+      <p>CSS <code>@starting-style</code> for enter animations. No JavaScript needed for mount transitions — great for our modal/dialog components.</p>
+      <div class="code" style="margin-top:0.5rem; font-size:0.65rem;"><span class="kw">className</span>=<span class="str">"
+  opacity-100 translate-y-0
+  starting:opacity-0
+  starting:translate-y-2
+  transition-all duration-200
+"</span></div>
+    </div>
+    <div class="c gp">
+      <h3>field-sizing-content</h3>
+      <p>Textarea auto-grows with its content. No JS resize handler.</p>
+      <div class="code" style="margin-top:0.5rem; font-size:0.65rem;">&lt;<span class="ty">textarea</span>
+  <span class="kw">className</span>=<span class="str">"
+    field-sizing-content
+    min-h-[80px] w-full
+    resize-none
+  "</span>
+/&gt;</div>
+    </div>
+    <div class="c gb">
+      <h3>More in v4</h3>
+      <ul>
+        <li><span class="tag b">text-balance</span> / <span class="tag b">text-pretty</span> — smart wrapping</li>
+        <li><span class="tag b">inset-shadow-*</span> — inner box shadows</li>
+        <li><span class="tag b">mask-*</span> — CSS masking API</li>
+        <li><span class="tag b">data-*</span> variants work without config</li>
+        <li>P3 wide-gamut colors (oklch) throughout</li>
+        <li>All JIT-only classes now default</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 10: Vite Plugin ==================== -->
+<div class="slide" data-slide="9">
+  <div class="sl blue">DX</div>
+  <h2>First-class Vite plugin<br>Zero-config setup</h2>
+  <p class="sub">The Vite plugin understands the module graph and offers better HMR granularity than PostCSS. For new projects, total setup is 3 lines.</p>
+
+  <div class="two">
+    <div>
+      <div class="diff-label" style="color:var(--rose); margin-bottom:0.4rem;">PostCSS setup (what we have now)</div>
+      <div class="code" style="margin-bottom:1rem; font-size:0.7rem;"><span class="cm">// postcss.config.mjs — ui-experience-kit</span>
+<span class="kw">export default</span> {
+  <span class="ty">plugins</span>: {
+    <span class="str">'@tailwindcss/postcss'</span>: {}
+  }
+}
+<span class="cm">// Works fine — this is valid v4 config</span></div>
+
+      <div class="diff-label" style="color:var(--emerald); margin-bottom:0.4rem;">Vite plugin (if we switch)</div>
+      <div class="code" style="font-size:0.7rem;"><span class="cm">// vite.config.ts</span>
+<span class="kw">import</span> tailwindcss <span class="kw">from</span> <span class="str">'@tailwindcss/vite'</span>
+
+<span class="kw">export default</span> {
+  <span class="ty">plugins</span>: [<span class="fn">tailwindcss</span>()]
+}
+<span class="cm">// Drop postcss.config.mjs entirely</span></div>
+    </div>
+    <div>
+      <div class="c gc" style="margin-bottom:0.8rem;">
+        <h3>Why the Vite plugin wins</h3>
+        <ul>
+          <li>Knows Vite's module graph — only reprocesses what changed</li>
+          <li>Better HMR granularity than the PostCSS path</li>
+          <li>No PostCSS overhead in the hot-reload critical path</li>
+          <li>Works with Vite SSR, library mode, Storybook</li>
+        </ul>
+      </div>
+      <div class="c ga" style="margin-bottom:0.8rem;">
+        <h3>We're already 90% there</h3>
+        <p><span class="tag a">ui-experience-kit</span> already has <span class="tag e">@tailwindcss/postcss</span> v4.2.1 in package.json and a valid <span class="tag e">postcss.config.mjs</span>. The migration isn't about setup — it's about replacing the SCSS files with utility classes.</p>
+      </div>
+      <div class="c go">
+        <h3>What's actually missing</h3>
+        <ul>
+          <li>An <span class="tag o">@import "tailwindcss"</span> in the main CSS entry</li>
+          <li>A <span class="tag o">@theme</span> block wired to design-tokens output</li>
+          <li>96 SCSS modules to convert, one by one</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 11: Migration Gotchas ==================== -->
+<div class="slide" data-slide="10">
+  <div class="sl rose">Watch out</div>
+  <h2>Breaking changes<br>& gotchas relevant to us</h2>
+
+  <div class="three">
+    <div class="c gr">
+      <h3>Shadow & radius renames</h3>
+      <p>The scale shifted down one step to make room at the top.</p>
+      <div class="code" style="margin-top:0.6rem; font-size:0.65rem;"><span class="cm">/* Renamed in v4 */</span>
+<span class="op">shadow-sm</span>  → <span class="str">shadow-xs</span>
+<span class="op">shadow</span>     → <span class="str">shadow-sm</span>
+<span class="op">rounded-sm</span> → <span class="str">rounded-xs</span>
+<span class="op">blur-sm</span>    → <span class="str">blur-xs</span>
+
+<span class="cm">/* ring-opacity gone */</span>
+<span class="op">ring-opacity-50</span> → <span class="str">ring-black/50</span></div>
+    </div>
+    <div class="c ga">
+      <h3>@apply in a component library</h3>
+      <p>This is our biggest gotcha. Using <span class="tag a">@apply</span> in CSS from a <em>different package</em>? v4 scopes utilities per-CSS-file. Use <span class="tag a">@reference</span> to pull in token context without emitting duplicate CSS.</p>
+      <div class="code" style="margin-top:0.6rem; font-size:0.65rem;"><span class="cm">/* In ui-experience-kit components */</span>
+<span class="kw">@reference</span> <span class="str">"../../globals.css"</span>;
+.<span class="ty">btn</span> { <span class="kw">@apply</span> px-4 py-2 rounded-md; }</div>
+      <p style="margin-top:0.4rem; color:var(--amber);">Prefer inline utilities — @apply is an escape hatch.</p>
+    </div>
+    <div class="c gc">
+      <h3>SCSS @import conflict</h3>
+      <p>v4 uses native CSS <span class="tag c">@import</span> — which Sass intercepts. Running both Sass and Tailwind in the same compilation step causes errors.</p>
+      <p style="margin-top:0.5rem;"><strong style="color:var(--text-bright);">Our solution:</strong> migrating <em>away</em> from SCSS eliminates the conflict entirely. Each migrated component removes one SCSS file.</p>
+    </div>
+  </div>
+
+  <div class="three" style="margin-top:1rem;">
+    <div class="c gv">
+      <h3>Dark mode strategy</h3>
+      <p>v4 defaults to <code>prefers-color-scheme</code> media query. v3 used class strategy. If we use <span class="tag v">.dark</span> class, add to CSS:</p>
+      <div class="code" style="margin-top:0.5rem; font-size:0.65rem;"><span class="kw">@variant</span> dark (
+  <span class="str">&amp;:where(.dark, .dark *)</span>
+);</div>
+    </div>
+    <div class="c gb">
+      <h3>Default border color</h3>
+      <p>v3: <span class="tag">border</span> defaulted to <span class="tag b">gray-200</span>. v4: defaults to <span class="tag b">currentColor</span>. Any component relying on the implicit default will show different borders.</p>
+      <div class="code" style="margin-top:0.5rem; font-size:0.65rem;"><span class="kw">@theme</span> {
+  <span class="ty">--default-border-color</span>:
+    <span class="fn">var</span>(<span class="ty">--color-gray-200</span>);
+}</div>
+    </div>
+    <div class="c go">
+      <h3>Other renamed utilities</h3>
+      <ul>
+        <li><span class="tag o">overflow-ellipsis</span> → <span class="tag e">text-ellipsis</span></li>
+        <li><span class="tag o">flex-shrink-0</span> → <span class="tag e">shrink-0</span></li>
+        <li><span class="tag o">flex-grow</span> → <span class="tag e">grow</span></li>
+        <li><span class="tag o">decoration-clone</span> → <span class="tag e">box-decoration-clone</span></li>
+      </ul>
+      <p style="margin-top:0.5rem;">The <span class="tag o">@tailwindcss/upgrade</span> CLI catches all of these automatically.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 12: Our Repos ==================== -->
+<div class="slide" data-slide="11">
+  <div class="sl emerald">Our stack</div>
+  <h2>Where we stand<br>across the three repos</h2>
+  <p class="sub">The good news: the hardest parts are already done. What remains is mechanical — and that's exactly what AI is for.</p>
+
+  <div style="margin-bottom:1.2rem;">
+    <div class="repo-row">
+      <div>
+        <div class="repo-name">ui-experience-kit</div>
+        <div style="font-size:0.7rem; color:var(--text-dim); margin-top:2px;">Design System</div>
+      </div>
+      <div class="repo-desc">
+        <span class="check">✓</span> Tailwind v4.2.1 already in package.json &nbsp;
+        <span class="check">✓</span> <code>@tailwindcss/postcss</code> wired in postcss.config.mjs &nbsp;
+        <span class="check">✓</span> CSS custom properties used throughout (no SCSS vars) &nbsp;
+        <span class="warn">~</span> 96 <code>.module.scss</code> files still active &nbsp;
+        <span class="warn">~</span> Button already mixes Tailwind + SCSS (hybrid proof-of-concept) &nbsp;
+        <span class="cross">✗</span> No <code>@import "tailwindcss"</code> in main CSS entry yet
+      </div>
+    </div>
+    <div class="repo-row">
+      <div>
+        <div class="repo-name">design-tokens</div>
+        <div style="font-size:0.7rem; color:var(--text-dim); margin-top:2px;">Token Pipeline</div>
+      </div>
+      <div class="repo-desc">
+        <span class="check">✓</span> Style Dictionary v5 generates CSS custom properties &nbsp;
+        <span class="check">✓</span> Already outputs a Tailwind v4 <code>@theme</code> block &nbsp;
+        <span class="check">✓</span> Token naming follows v4 convention: <code>--color-primary-500</code>, <code>--spacing-lg</code> &nbsp;
+        <span class="check">✓</span> Two brands: <code>techem</code> + <code>bfwt</code> — both supported &nbsp;
+        <span class="warn">~</span> Legacy prefix: some tokens still use <code>--d3x-*</code>
+      </div>
+    </div>
+    <div class="repo-row">
+      <div>
+        <div class="repo-name">portal-frontend</div>
+        <div style="font-size:0.7rem; color:var(--text-dim); margin-top:2px;">Main App</div>
+      </div>
+      <div class="repo-desc">
+        <span class="cross">✗</span> No Tailwind — pure SCSS modules &nbsp;
+        <span class="check">✓</span> Consumes ui-experience-kit components &nbsp;
+        <span class="warn">~</span> As we migrate ui-experience-kit, portal-frontend benefits automatically &nbsp;
+        <span class="warn">~</span> Own SCSS files are a separate migration — not today's scope
+      </div>
+    </div>
+  </div>
+
+  <div class="three">
+    <div class="c gc">
+      <h3>The Button is your proof</h3>
+      <p>Button already uses <code>clsx('inline-flex items-center rounded-md', styles.button, ...)</code> — mixing Tailwind utilities with SCSS. The pattern works. We just need to complete the migration per component.</p>
+    </div>
+    <div class="c ga">
+      <h3>The TODO is already written</h3>
+      <p>Inside <code>Button.module.scss</code> there's an existing comment: <em>"TODO: Replace with proper tailwind design tokens."</em> This was always the plan — today we do it.</p>
+    </div>
+    <div class="c gv">
+      <h3>96 files sounds like a lot</h3>
+      <p>At ~30 min per component with AI assistance, 3 devs working in parallel = done in one sprint. The Avatar is 22 lines of CSS. Most DS components are similarly compact.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 13: Exercise Intro ==================== -->
+<div class="slide" data-slide="12">
+  <div class="sl pink">Exercise</div>
+  <h2>Migrating Avatar.tsx<br>from SCSS to Tailwind v4</h2>
+  <p class="sub">Avatar is the perfect starting component: small, self-contained, uses CSS vars for theming, and covers the key patterns you'll see across all 96 files.</p>
+
+  <div class="two">
+    <div>
+      <div class="c gr" style="margin-bottom:0.8rem;">
+        <h3>The full Avatar.module.scss (22 lines)</h3>
+        <div class="code" style="margin-top:0.6rem; font-size:0.65rem; line-height:1.7;"><span class="ty">.AvatarRoot</span> {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  overflow: hidden;
+  user-select: none;
+  border-radius: 100%;
+  background-color: <span class="fn">var</span>(<span class="ty">--d3x-white</span>);
+}
+<span class="ty">.sm</span>  { width: <span class="num">3rem</span>;   height: <span class="num">3rem</span>; }
+<span class="ty">.md</span>  { width: <span class="num">3.5rem</span>; height: <span class="num">3.5rem</span>; }
+<span class="ty">.lg</span>  { width: <span class="num">4rem</span>;   height: <span class="num">4rem</span>; }
+<span class="ty">.AvatarImage</span> {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+<span class="ty">.AvatarFallback</span> {
+  width: 100%; height: 100%;
+  display: flex;
+  align-items: center; justify-content: center;
+  background-color: <span class="fn">var</span>(<span class="ty">--d3x-gray-700</span>);
+  color: <span class="fn">var</span>(<span class="ty">--d3x-white</span>);
+  font-size: <span class="num">1.5rem</span>; font-weight: <span class="num">500</span>;
+  line-height: <span class="num">1</span>;
+}</div>
+      </div>
+    </div>
+    <div>
+      <div class="c gc" style="margin-bottom:0.8rem;">
+        <h3>What patterns this covers</h3>
+        <ul>
+          <li>CSS custom property tokens → Tailwind arbitrary values</li>
+          <li>Conditional size classes (<code>.sm</code> / <code>.md</code> / <code>.lg</code>) → lookup object</li>
+          <li><code>border-radius: inherit</code> → <code>rounded-[inherit]</code></li>
+          <li>Removing the <code>styles</code> import entirely</li>
+          <li>Using <code>clsx()</code> for composition (already in our codebase)</li>
+        </ul>
+      </div>
+      <div class="c gv" style="margin-bottom:0.8rem;">
+        <h3>Exercise flow</h3>
+        <div class="steps" style="margin-top:0.5rem;">
+          <div class="step">
+            <div class="step-n" style="background:rgba(236,72,153,0.12); color:var(--pink);">1</div>
+            <div><h4>Run the AI prompt</h4><p>Paste Avatar.tsx + Avatar.module.scss into Claude</p></div>
+          </div>
+          <div class="step">
+            <div class="step-n" style="background:rgba(236,72,153,0.12); color:var(--pink);">2</div>
+            <div><h4>Review the diff</h4><p>Did every style survive? Any edge cases missed?</p></div>
+          </div>
+          <div class="step">
+            <div class="step-n" style="background:rgba(236,72,153,0.12); color:var(--pink);">3</div>
+            <div><h4>Validate</h4><p>Type-check + visual check all 3 sizes + fallback</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 14: The Prompt ==================== -->
+<div class="slide" data-slide="13">
+  <div class="sl violet">The prompt</div>
+  <h2>Copy-paste this into<br>Claude Code or claude.ai</h2>
+
+  <div class="two">
+    <div>
+      <div class="code" style="font-size:0.61rem; line-height:1.75;"><span class="cm">You are helping migrate a component from the Techem</span>
+<span class="cm">Design System (ui-experience-kit) from SCSS Modules</span>
+<span class="cm">to Tailwind CSS v4.</span>
+
+<span class="str">Stack:</span>
+<span class="cm">- React + TypeScript + Radix UI primitives</span>
+<span class="cm">- clsx() for conditional class composition</span>
+<span class="cm">- SCSS Modules → Tailwind v4 utility classes</span>
+<span class="cm">- Tokens are CSS custom properties (no SCSS vars)</span>
+<span class="cm">- Goal: identical visual output, zero SCSS left</span>
+
+<span class="str">Steps:</span>
+<span class="cm">1. Analyze the SCSS — understand all styles</span>
+<span class="cm">2. Show a mapping table: SCSS rule → Tailwind</span>
+<span class="cm">3. Rewrite the TSX with utility classes inline</span>
+<span class="cm">4. Remove the SCSS import and styles.* references</span>
+<span class="cm">5. For conditional variants (sm/md/lg), use a</span>
+<span class="cm">   const lookup object, not SCSS class refs</span>
+<span class="cm">6. For things you can't express as utilities,</span>
+<span class="cm">   keep a small CSS block with a TODO comment</span>
+
+<span class="str">Rules:</span>
+<span class="cm">- Use clsx() (not cn()) — already imported</span>
+<span class="cm">- Use bg-[--d3x-white] for CSS var tokens</span>
+<span class="cm">- Or bg-[--color-primary-500] for token names</span>
+<span class="cm">- Map breakpoints to responsive prefixes</span>
+<span class="cm">- Preserve hover/focus/disabled with variants</span>
+<span class="cm">- Group: layout → sizing → color → typography</span>
+<span class="cm">- Flag unmappable selectors with a TODO</span>
+
+<span class="str">--- Component (.tsx) ---</span>
+<span class="cm">[paste Avatar.tsx here]</span>
+
+<span class="str">--- SCSS Module ---</span>
+<span class="cm">[paste Avatar.module.scss here]</span>
+
+<span class="str">--- Available CSS tokens (subset) ---</span>
+<span class="cm">--d3x-white, --d3x-gray-700</span>
+<span class="cm">--color-primary-500, --color-primary-600</span>
+<span class="cm">--color-primary-100, --color-white</span>
+<span class="cm">--radius-size-sm, --radius-size-lg</span>
+<span class="cm">--spacing-xs, --spacing-sm, --spacing-md, --spacing-lg</span></div>
+    </div>
+    <div>
+      <div class="c gc" style="margin-bottom:0.8rem;">
+        <h3>Tips for better results</h3>
+        <ul>
+          <li>Paste the actual token list from design-tokens output — the AI maps exactly what you give it</li>
+          <li>For complex components (Button), do one variant at a time: primary first, then secondary, etc.</li>
+          <li>Ask for the mapping table first, validate it, then ask for the full rewrite</li>
+          <li>End with: "Does anything look visually different? What would you flag for manual review?"</li>
+        </ul>
+      </div>
+      <div class="c gv" style="margin-bottom:0.8rem;">
+        <h3>Iteration prompt</h3>
+        <div class="code" style="margin-top:0.5rem; font-size:0.65rem;"><span class="cm">The .primary:hover:not(:disabled) state</span>
+<span class="cm">is missing from the Button migration.</span>
+<span class="cm">SCSS: &:hover:not(:disabled) { bg: var(--color-primary-600) }</span>
+<span class="cm">Add it using hover: and not-disabled: variants.</span></div>
+      </div>
+      <div class="c go">
+        <h3>Validation checklist</h3>
+        <ul>
+          <li><code>grep -r "styles\." src/Avatar/</code> → zero results</li>
+          <li><code>grep -r ".module.scss" src/Avatar/</code> → zero results</li>
+          <li><code>npm run type-check</code> passes clean</li>
+          <li>Visual: all 3 sizes, image mode, fallback mode</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 15: Live Demo ==================== -->
+<div class="slide" data-slide="14">
+  <div class="sl emerald">Live demo</div>
+  <h2>Avatar: before & after<br>real code, real component</h2>
+  <p class="sub">Let's run the prompt together. <strong style="color:var(--text-bright);">Open Claude Code</strong> → paste the prompt → paste Avatar.tsx + Avatar.module.scss → watch it work.</p>
+
+  <div class="diff">
+    <div>
+      <div class="diff-label" style="color:var(--rose);">Avatar.tsx — before (uses styles.*)</div>
+      <div class="code" style="font-size:0.61rem; line-height:1.65;"><span class="kw">import</span> * <span class="kw">as</span> ReactAvatar <span class="kw">from</span> <span class="str">'@radix-ui/react-avatar'</span>
+<span class="op">import</span> styles <span class="op">from</span> <span class="str">'./Avatar.module.scss'</span>   <span class="cm">← DELETE</span>
+<span class="kw">import</span> clsx <span class="kw">from</span> <span class="str">'clsx'</span>
+
+<span class="kw">export function</span> <span class="fn">Avatar</span>({ className, src, alt,
+  fallback, delayMs = <span class="num">600</span>, size = <span class="str">'md'</span> }) {
+  <span class="kw">return</span> (
+    &lt;<span class="ty">ReactAvatar.Root</span>
+      <span class="kw">className</span>={<span class="fn">clsx</span>(
+        <span class="op">styles.AvatarRoot</span>,   <span class="cm">← REPLACE</span>
+        <span class="op">styles[size]</span>          <span class="cm">← REPLACE</span>
+      )}&gt;
+      &lt;<span class="ty">ReactAvatar.Image</span>
+        <span class="kw">className</span>={<span class="fn">clsx</span>(<span class="op">styles.AvatarImage</span>, className)}  <span class="cm">← REPLACE</span>
+        src={src} alt={alt} /&gt;
+      &lt;<span class="ty">ReactAvatar.Fallback</span>
+        <span class="kw">className</span>={<span class="fn">clsx</span>(<span class="op">styles.AvatarFallback</span>, className)} <span class="cm">← REPLACE</span>
+        delayMs={delayMs}&gt;
+        {fallback}
+      &lt;/<span class="ty">ReactAvatar.Fallback</span>&gt;
+    &lt;/<span class="ty">ReactAvatar.Root</span>&gt;
+  )
+}</div>
+    </div>
+    <div>
+      <div class="diff-label" style="color:var(--emerald);">Avatar.tsx — after (zero SCSS)</div>
+      <div class="code" style="font-size:0.61rem; line-height:1.65;"><span class="kw">import</span> * <span class="kw">as</span> ReactAvatar <span class="kw">from</span> <span class="str">'@radix-ui/react-avatar'</span>
+<span class="cm">// No SCSS import ✓</span>
+<span class="kw">import</span> clsx <span class="kw">from</span> <span class="str">'clsx'</span>
+
+<span class="kw">const</span> sizeClasses = {
+  <span class="str">sm</span>: <span class="str">'w-12 h-12'</span>,
+  <span class="str">md</span>: <span class="str">'w-14 h-14'</span>,
+  <span class="str">lg</span>: <span class="str">'w-16 h-16'</span>,
+}
+
+<span class="kw">export function</span> <span class="fn">Avatar</span>({ className, src, alt,
+  fallback, delayMs = <span class="num">600</span>, size = <span class="str">'md'</span> }) {
+  <span class="kw">return</span> (
+    &lt;<span class="ty">ReactAvatar.Root</span> <span class="kw">className</span>={<span class="fn">clsx</span>(
+      <span class="str">'inline-flex items-center justify-center'</span>,
+      <span class="str">'align-middle overflow-hidden select-none'</span>,
+      <span class="str">'rounded-full bg-[--d3x-white]'</span>,
+      sizeClasses[size],
+    )}&gt;
+      &lt;<span class="ty">ReactAvatar.Image</span>
+        <span class="kw">className</span>={<span class="fn">clsx</span>(
+          <span class="str">'w-full h-full object-cover rounded-[inherit]'</span>,
+          className,
+        )}
+        src={src} alt={alt} /&gt;
+      &lt;<span class="ty">ReactAvatar.Fallback</span>
+        <span class="kw">className</span>={<span class="fn">clsx</span>(
+          <span class="str">'w-full h-full flex items-center justify-center'</span>,
+          <span class="str">'bg-[--d3x-gray-700] text-[--d3x-white]'</span>,
+          <span class="str">'text-2xl leading-none font-medium'</span>,
+          className,
+        )}
+        delayMs={delayMs}&gt;{fallback}
+      &lt;/<span class="ty">ReactAvatar.Fallback</span>&gt;
+    &lt;/<span class="ty">ReactAvatar.Root</span>&gt;
+  )
+}</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 16: Button — Hybrid ==================== -->
+<div class="slide" data-slide="15">
+  <div class="sl amber">Real complexity</div>
+  <h2>The Button: hybrid done right<br>and what's left</h2>
+  <p class="sub">Button is the most complex component to migrate — but it's also the most valuable proof that this approach works. It's already halfway there.</p>
+
+  <div class="two">
+    <div>
+      <div class="c ga" style="margin-bottom:0.8rem;">
+        <h3>Button already mixes Tailwind + SCSS</h3>
+        <div class="code" style="margin-top:0.5rem; font-size:0.65rem;"><span class="cm">// Button.tsx — current state</span>
+<span class="kw">const</span> classes = <span class="fn">clsx</span>(
+  <span class="hl"><span class="str">'inline-flex items-center rounded-md'</span></span>,  <span class="cm">← Tailwind ✓</span>
+  <span class="fn">getJustifyContentAttributes</span>(horizontalAlignment),
+  <span class="op">styles.button</span>,             <span class="cm">← SCSS (to remove)</span>
+  className,
+  {
+    [<span class="op">styles.primary</span>]: ...,    <span class="cm">← SCSS (to remove)</span>
+    [<span class="op">styles.secondary</span>]: ...,  <span class="cm">← SCSS (to remove)</span>
+  },
+)</div>
+      </div>
+      <div class="c gr">
+        <h3>The SCSS that remains (complex)</h3>
+        <div class="code" style="margin-top:0.5rem; font-size:0.65rem;"><span class="ty">.primary</span> {
+  background: <span class="fn">var</span>(<span class="ty">--color-primary-500</span>);
+  color: <span class="fn">var</span>(<span class="ty">--color-white</span>);
+  <span class="str">&:hover:not(:disabled)</span> {
+    background: <span class="fn">var</span>(<span class="ty">--color-primary-600</span>);
+  }
+  <span class="str">&:disabled</span> {
+    background: <span class="fn">var</span>(<span class="ty">--color-primary-100</span>);
+    pointer-events: none;
+  }
+}
+<span class="cm">/* + secondary, tertiary, flat, link, icon... */</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="c gc" style="margin-bottom:0.8rem;">
+        <h3>What the migration produces</h3>
+        <div class="code" style="margin-top:0.5rem; font-size:0.65rem;"><span class="cm">// Button.tsx — after</span>
+<span class="kw">const</span> variantClasses: Record&lt;...&gt; = {
+  primary: <span class="fn">clsx</span>(
+    <span class="str">'bg-[--color-primary-500] text-[--color-white]'</span>,
+    <span class="str">'border border-[--color-primary-500]'</span>,
+    <span class="str">'hover:not-disabled:bg-[--color-primary-600]'</span>,
+    <span class="str">'disabled:bg-[--color-primary-100]'</span>,
+    <span class="str">'disabled:pointer-events-none'</span>,
+  ),
+  secondary: <span class="fn">clsx</span>(
+    <span class="str">'bg-[--color-white] text-[--color-primary-500]'</span>,
+    <span class="str">'border border-[--color-primary-500]'</span>,
+    <span class="str">'hover:not-disabled:bg-[--color-primary-500]'</span>,
+    <span class="str">'hover:not-disabled:text-[--color-white]'</span>,
+  ),
+  <span class="cm">// ... more variants</span>
+}</div>
+      </div>
+      <div class="c gv">
+        <h3>Strategy for complex components</h3>
+        <ul>
+          <li>One variant at a time — primary first, then secondary</li>
+          <li>Run AI prompt per variant, not the whole file</li>
+          <li>Use a variant lookup object (not class toggling)</li>
+          <li>Test each variant visually before moving on</li>
+          <li>The TODO comment in Button.module.scss says it was always the plan</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 17: Resources ==================== -->
+<div class="slide" data-slide="16">
+  <div class="sl cyan">Wrap-up</div>
+  <h2>Key takeaways<br>+ concrete next steps</h2>
+
+  <div class="two">
+    <div>
+      <div class="c gc" style="margin-bottom:0.8rem;">
+        <h3>What you now know</h3>
+        <ul>
+          <li>v4 is a Rust rewrite — Oxide engine via Lightning CSS</li>
+          <li>Full builds 5× faster, incremental 100× faster</li>
+          <li><span class="tag c">@import "tailwindcss"</span> replaces three directives</li>
+          <li><span class="tag c">@theme {}</span> replaces <span class="tag">tailwind.config.js</span> entirely</li>
+          <li>All tokens auto-become CSS custom properties on <span class="tag">:root</span></li>
+          <li>Container queries, dvh, not-*, starting: — all built in</li>
+          <li>AI can handle the SCSS migration grunt work in minutes</li>
+        </ul>
+      </div>
+      <div class="c ge">
+        <h3>Our migration backlog</h3>
+        <ul>
+          <li><span class="tag e">1.</span> Wire <span class="tag e">@import "tailwindcss"</span> + <span class="tag e">@theme</span> in ui-experience-kit entry CSS</li>
+          <li><span class="tag e">2.</span> Start with small components: Avatar, Badge, Spinner</li>
+          <li><span class="tag e">3.</span> Use the AI prompt, validate, open a PR per component</li>
+          <li><span class="tag e">4.</span> Track with: <code>find src -name "*.module.scss" | wc -l</code></li>
+          <li><span class="tag e">5.</span> Tackle Button last — most complex, highest value</li>
+          <li><span class="tag e">6.</span> portal-frontend migration follows naturally</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="c gb" style="margin-bottom:0.8rem;">
+        <h3>Essential links</h3>
+        <ul>
+          <li><strong style="color:var(--text-bright);">tailwindcss.com/docs</strong> — full v4 docs + upgrade guide</li>
+          <li><strong style="color:var(--text-bright);">tailwindcss.com/blog/tailwindcss-v4</strong> — Adam's deep-dive with benchmarks</li>
+          <li><strong style="color:var(--text-bright);">lightningcss.dev</strong> — the Rust engine underneath</li>
+          <li><strong style="color:var(--text-bright);">play.tailwindcss.com</strong> — v4 sandbox, try things instantly</li>
+        </ul>
+      </div>
+      <div class="c gv" style="margin-bottom:0.8rem;">
+        <h3>VS Code extensions</h3>
+        <ul>
+          <li><strong style="color:var(--text-bright);">Tailwind CSS IntelliSense</strong> — autocomplete, v4-aware</li>
+          <li><strong style="color:var(--text-bright);">Headwind</strong> — sorts class names consistently</li>
+          <li><strong style="color:var(--text-bright);">PostCSS Language Support</strong> — syntax highlighting for <span class="tag v">@theme</span> blocks</li>
+        </ul>
+      </div>
+      <div class="c go">
+        <h3>The migration prompt</h3>
+        <p>It's in the shared session doc. Adapt the token list to the component you're migrating — paste from the <span class="tag o">design-tokens</span> CSS output for accuracy.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<div class="dots" id="dots"></div>
+<div class="kbd-hint"><span><kbd>&larr;</kbd> <kbd>&rarr;</kbd> Navigate</span> <span><kbd>Space</kbd> Next</span></div>
+<div class="nav">
+  <button class="nav-btn" id="prev">&larr;</button>
+  <span class="nav-counter" id="counter"></span>
+  <button class="nav-btn" id="next">&rarr;</button>
+</div>
+
+<script>
+(function(){
+  const slides=document.querySelectorAll('.slide'), total=slides.length;
+  let cur=0;
+  const bar=document.getElementById('progress'), ctr=document.getElementById('counter'),
+        pb=document.getElementById('prev'), nb=document.getElementById('next'),
+        dots=document.getElementById('dots');
+  for(let i=0;i<total;i++){const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>go(i);dots.appendChild(d);}
+  function go(n){
+    if(n<0||n>=total||n===cur)return;
+    const dir=n>cur?1:-1;
+    slides[cur].classList.remove('active');slides[cur].style.transform=dir>0?'translateX(-60px)':'translateX(60px)';
+    slides[n].style.transform=dir>0?'translateX(60px)':'translateX(-60px)';
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{slides[n].classList.add('active');slides[n].style.transform='';}));
+    cur=n;ui();
+  }
+  function ui(){
+    bar.style.width=((cur+1)/total*100)+'%';ctr.textContent=(cur+1)+' / '+total;
+    pb.disabled=cur===0;nb.disabled=cur===total-1;
+    dots.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===cur));
+  }
+  pb.onclick=()=>go(cur-1);nb.onclick=()=>go(cur+1);
+  document.onkeydown=e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();go(cur+1);}if(e.key==='ArrowLeft'){e.preventDefault();go(cur-1);}if(e.key==='Home'){e.preventDefault();go(0);}if(e.key==='End'){e.preventDefault();go(total-1);}};
+  let tx=0;document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;},{passive:true});
+  document.addEventListener('touchend',e=>{const d=tx-e.changedTouches[0].clientX;if(Math.abs(d)>50)d>0?go(cur+1):go(cur-1);},{passive:true});
+  ui();
+})();
+</script>
+</body>
+</html>
