@@ -970,7 +970,7 @@
           </div>
           <div class="step">
             <div class="step-n" style="background:rgba(236,72,153,0.12); color:var(--pink);">2</div>
-            <div><h4>Open your component</h4><p>Navigate to the assigned .tsx + .module.scss files in the repo</p></div>
+            <div><h4>Pick your component</h4><p>Choose one from the list in the next slide — coordinate to avoid duplicates</p></div>
           </div>
           <div class="step">
             <div class="step-n" style="background:rgba(236,72,153,0.12); color:var(--pink);">3</div>
@@ -1015,77 +1015,81 @@ grep -rn <span class="str">"styles\."</span> src/YourComponent/
   </div>
 </div>
 
-<!-- ==================== 14: Group Assignments ==================== -->
+<!-- ==================== 14: Component List ==================== -->
 <div class="slide" data-slide="14">
-  <div class="sl violet">Groups</div>
-  <h2>Which component<br>is yours?</h2>
-  <p class="sub">Complexity increases from left to right. If Group 1 finishes early, help Group 2. If Group 3 is stuck, focus on the <code>primary</code> variant only — that's already the most valuable.</p>
+  <div class="sl violet">Pick your component</div>
+  <h2>96 files — choose one,<br>coordinate to avoid duplicates</h2>
+  <p class="sub">Navigate to <code>src/ComponentName/</code> in the kit repo. The number after each name is the SCSS line count — a rough guide to complexity. Start simple if unsure.</p>
 
-  <div class="three">
-    <div class="c gc">
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.6rem;">
-        <h3>Group 1</h3>
-        <span class="tag e">Simple</span>
-      </div>
-      <div style="font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:700; color:var(--cyan); margin-bottom:0.6rem;">Avatar</div>
-      <ul>
-        <li>~22 lines of SCSS</li>
-        <li>3 size variants: sm / md / lg</li>
-        <li>2 sub-components: Image + Fallback</li>
-        <li>Tokens: <code>--d3x-white</code>, <code>--d3x-gray-700</code></li>
-        <li>No interactive states</li>
-      </ul>
-      <div style="margin-top:0.7rem; padding:0.5rem 0.7rem; background:rgba(6,182,212,0.07); border-radius:7px; font-size:0.72rem; color:var(--text-dim);">
-        <strong style="color:var(--text-bright);">Key challenge:</strong> convert <code>styles[size]</code> to a const lookup object
-      </div>
-      <div class="code" style="margin-top:0.6rem; font-size:0.62rem;">src/components/Avatar/
-├── Avatar.tsx
-└── Avatar.module.scss</div>
-    </div>
-    <div class="c ga">
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.6rem;">
-        <h3>Group 2</h3>
-        <span class="tag a">Medium</span>
-      </div>
-      <div style="font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:700; color:var(--amber); margin-bottom:0.6rem;">Badge / Tag</div>
-      <ul>
-        <li>Multiple color variants (status, brand…)</li>
-        <li>Optional icon + size props</li>
-        <li>Color tokens from design system</li>
-        <li>Minimal interactive states</li>
-        <li>Good variant → color mapping exercise</li>
-      </ul>
-      <div style="margin-top:0.7rem; padding:0.5rem 0.7rem; background:rgba(245,158,11,0.07); border-radius:7px; font-size:0.72rem; color:var(--text-dim);">
-        <strong style="color:var(--text-bright);">Key challenge:</strong> build a clean variant → token mapping object
-      </div>
-      <div class="code" style="margin-top:0.6rem; font-size:0.62rem;">src/components/Badge/
-├── Badge.tsx
-└── Badge.module.scss</div>
-    </div>
-    <div class="c gr">
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.6rem;">
-        <h3>Group 3</h3>
-        <span class="tag r">Complex</span>
-      </div>
-      <div style="font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:700; color:var(--rose); margin-bottom:0.6rem;">Button</div>
-      <ul>
-        <li>Already partially migrated (hybrid)</li>
-        <li>6 variants: primary, secondary, tertiary…</li>
-        <li>Hover, focus, disabled states per variant</li>
-        <li>Uses <code>:hover:not(:disabled)</code> pattern</li>
-        <li>The highest-value component in the DS</li>
-      </ul>
-      <div style="margin-top:0.7rem; padding:0.5rem 0.7rem; background:rgba(244,63,94,0.07); border-radius:7px; font-size:0.72rem; color:var(--text-dim);">
-        <strong style="color:var(--text-bright);">Key challenge:</strong> <code>not-disabled:</code> + multi-variant lookup object
-      </div>
-      <div class="code" style="margin-top:0.6rem; font-size:0.62rem;">src/components/Button/
-├── Button.tsx
-└── Button.module.scss</div>
+  <div style="margin-bottom:0.9rem;">
+    <div style="font-size:0.62rem; font-weight:700; color:var(--emerald); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.5rem;">Quick wins — ≤15 lines</div>
+    <div style="display:flex; flex-wrap:wrap; gap:4px;">
+      <span class="tag e">StatusContainer <span style="opacity:0.45;">3</span></span>
+      <span class="tag e">ErrorCard <span style="opacity:0.45;">3</span></span>
+      <span class="tag e">VideoHelpModal <span style="opacity:0.45;">3</span></span>
+      <span class="tag e">CardDivider <span style="opacity:0.45;">3</span></span>
+      <span class="tag e">SupportButton <span style="opacity:0.45;">6</span></span>
+      <span class="tag e">StatisticsCard <span style="opacity:0.45;">6</span></span>
+      <span class="tag e">Link <span style="opacity:0.45;">8</span></span>
+      <span class="tag e">ServiceCard <span style="opacity:0.45;">8</span></span>
+      <span class="tag e">GlobalHeader <span style="opacity:0.45;">9</span></span>
+      <span class="tag e">WorkflowHeader <span style="opacity:0.45;">11</span></span>
+      <span class="tag e">ProgressBar <span style="opacity:0.45;">12</span></span>
+      <span class="tag e">FeedbackButton <span style="opacity:0.45;">13</span></span>
     </div>
   </div>
 
-  <div style="margin-top:1.2rem; padding:0.75rem 1.2rem; background:rgba(139,92,246,0.05); border:1px solid rgba(139,92,246,0.15); border-radius:10px; font-size:0.78rem; color:var(--text-dim);">
-    <strong style="color:var(--text-bright);">Tip:</strong> Within your group, different people can use different tools on the same component. The comparison at the end is part of the learning.
+  <div style="margin-bottom:0.9rem;">
+    <div style="font-size:0.62rem; font-weight:700; color:var(--amber); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.5rem;">Medium — 16–60 lines</div>
+    <div style="display:flex; flex-wrap:wrap; gap:4px;">
+      <span class="tag a">PropertyCard <span style="opacity:0.45;">16</span></span>
+      <span class="tag a">HistoryBulletList <span style="opacity:0.45;">17</span></span>
+      <span class="tag a">FeatureCard <span style="opacity:0.45;">18</span></span>
+      <span class="tag a">TextareaWithLabel <span style="opacity:0.45;">19</span></span>
+      <span class="tag a">VerticalTabs <span style="opacity:0.45;">19</span></span>
+      <span class="tag a">SectionStack <span style="opacity:0.45;">19</span></span>
+      <span class="tag a">Icon <span style="opacity:0.45;">22</span></span>
+      <span class="tag a">WorkflowDrawer <span style="opacity:0.45;">22</span></span>
+      <span class="tag a">ImageCardWithCaption <span style="opacity:0.45;">23</span></span>
+      <span class="tag a">ButtonCard <span style="opacity:0.45;">25</span></span>
+      <span class="tag a">DownloadBar <span style="opacity:0.45;">26</span></span>
+      <span class="tag a">Pagination <span style="opacity:0.45;">26</span></span>
+      <span class="tag a">TilesGrid <span style="opacity:0.45;">29</span></span>
+      <span class="tag a">Banner <span style="opacity:0.45;">32</span></span>
+      <span class="tag a">TableCell <span style="opacity:0.45;">33</span></span>
+      <span class="tag a">SearchAutosuggest <span style="opacity:0.45;">34</span></span>
+      <span class="tag a">Dropdown <span style="opacity:0.45;">37</span></span>
+      <span class="tag a">Collapsible <span style="opacity:0.45;">38</span></span>
+      <span class="tag a">Badge <span style="opacity:0.45;">39</span></span>
+      <span class="tag a">Toast <span style="opacity:0.45;">39</span></span>
+      <span class="tag a">RadioGroup <span style="opacity:0.45;">43</span></span>
+      <span class="tag a">SelectWithLabel <span style="opacity:0.45;">43</span></span>
+      <span class="tag a">Avatar <span style="opacity:0.45;">45</span></span>
+      <span class="tag a">MultiSelect <span style="opacity:0.45;">47</span></span>
+    </div>
+  </div>
+
+  <div style="margin-bottom:0.9rem;">
+    <div style="font-size:0.62rem; font-weight:700; color:var(--rose); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.5rem;">Complex — 60+ lines</div>
+    <div style="display:flex; flex-wrap:wrap; gap:4px;">
+      <span class="tag r">CheckboxCard <span style="opacity:0.45;">51</span></span>
+      <span class="tag r">Toggle <span style="opacity:0.45;">54</span></span>
+      <span class="tag r">Accordion <span style="opacity:0.45;">55</span></span>
+      <span class="tag r">Tooltip <span style="opacity:0.45;">65</span></span>
+      <span class="tag r">Checkbox <span style="opacity:0.45;">72</span></span>
+      <span class="tag r">ImageCard <span style="opacity:0.45;">74</span></span>
+      <span class="tag r">Spinner <span style="opacity:0.45;">75</span></span>
+      <span class="tag r">TabElement <span style="opacity:0.45;">77</span></span>
+      <span class="tag r">InputWithLabel <span style="opacity:0.45;">78</span></span>
+      <span class="tag r">Typography <span style="opacity:0.45;">92</span></span>
+      <span class="tag r">Modal <span style="opacity:0.45;">103</span></span>
+      <span class="tag r">SideSheet <span style="opacity:0.45;">110</span></span>
+      <span class="tag r">Datepicker <span style="opacity:0.45;">114</span></span>
+    </div>
+  </div>
+
+  <div style="padding:0.6rem 1rem; background:rgba(244,63,94,0.05); border:1px solid rgba(244,63,94,0.15); border-radius:8px; font-size:0.75rem; color:var(--text-dim);">
+    <strong style="color:var(--rose);">Avoid for this exercise:</strong> DataGrid (213 lines), Button (376 lines) — save for a dedicated sprint with more time.
   </div>
 </div>
 

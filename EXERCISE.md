@@ -59,13 +59,28 @@ Rules:
 
 ---
 
-## Group assignments
+## Component list — pick one, coordinate to avoid duplicates
 
-| Group | Component | Complexity | Key challenge |
-|---|---|---|---|
-| 1 | Avatar | Simple | CSS var tokens, size lookup object |
-| 2 | Badge / Tag | Medium | Variant → color token mapping |
-| 3 | Button | Complex | Many variants, `hover:not-disabled:` pattern |
+Navigate to `src/ComponentName/` in the kit repo. Number = SCSS line count.
+
+**Quick wins (≤15 lines)**
+StatusContainer (3), ErrorCard (3), VideoHelpModal (3), CardDivider (3),
+SupportButton (6), StatisticsCard (6), Link (8), ServiceCard (8),
+WorkflowHeader (11), ProgressBar (12), FeedbackButton (13)
+
+**Medium (16–60 lines)**
+PropertyCard (16), HistoryBulletList (17), FeatureCard (18), TextareaWithLabel (19),
+VerticalTabs (19), Icon (22), WorkflowDrawer (22), ImageCardWithCaption (23),
+ButtonCard (25), DownloadBar (26), Pagination (26), TilesGrid (29), Banner (32),
+TableCell (33), SearchAutosuggest (34), Dropdown (37), Collapsible (38),
+Badge (39), Toast (39), RadioGroup (43), SelectWithLabel (43), Avatar (45), MultiSelect (47)
+
+**Complex (60+ lines)**
+CheckboxCard (51), Toggle (54), Accordion (55), Tooltip (65), Checkbox (72),
+ImageCard (74), Spinner (75), TabElement (77), InputWithLabel (78),
+Typography (92), Modal (103), SideSheet (110), Datepicker (114)
+
+**Avoid for this exercise:** DataGrid (213), Button (376) — too large for 40 min.
 
 ---
 
