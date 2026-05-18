@@ -846,68 +846,115 @@
 <div class="slide" data-slide="11">
   <div class="sl emerald">Our stack</div>
   <h2>Where we stand<br>across the three repos</h2>
-  <p class="sub">The good news: the hardest parts are already done. What remains is mechanical — and that's exactly what AI is for.</p>
+  <p class="sub">The infrastructure is mostly in place. What remains is the SCSS migration — and the version bump that connects the chain end-to-end.</p>
 
   <div style="margin-bottom:1.2rem;">
+    <div class="repo-row">
+      <div>
+        <div class="repo-name">design-tokens</div>
+        <div style="font-size:0.7rem; color:var(--text-dim); margin-top:2px;">Token Pipeline — v1.6.0</div>
+      </div>
+      <div class="repo-desc">
+        <span class="check">✓</span> Style Dictionary v5 generates both <code>:root {}</code> and <code>@theme {}</code> blocks &nbsp;
+        <span class="check">✓</span> Token naming follows v4 convention: <code>--color-primary-500</code>, <code>--spacing-lg</code> &nbsp;
+        <span class="check">✓</span> Two brands: <code>techem</code> + <code>bfwt</code> — both supported &nbsp;
+        <span class="warn">~</span> ui-experience-kit still on <code>1.5.0</code> — latest <code>1.6.0</code> not consumed yet &nbsp;
+        <span class="warn">~</span> Legacy prefix: some tokens still use <code>--d3x-*</code>
+      </div>
+    </div>
     <div class="repo-row">
       <div>
         <div class="repo-name">ui-experience-kit</div>
         <div style="font-size:0.7rem; color:var(--text-dim); margin-top:2px;">Design System</div>
       </div>
       <div class="repo-desc">
-        <span class="check">✓</span> Tailwind v4.2.1 already in package.json &nbsp;
-        <span class="check">✓</span> <code>@tailwindcss/postcss</code> wired in postcss.config.mjs &nbsp;
-        <span class="check">✓</span> CSS custom properties used throughout (no SCSS vars) &nbsp;
-        <span class="warn">~</span> 96 <code>.module.scss</code> files still active &nbsp;
-        <span class="warn">~</span> Button already mixes Tailwind + SCSS (hybrid proof-of-concept) &nbsp;
-        <span class="cross">✗</span> No <code>@import "tailwindcss"</code> in main CSS entry yet
-      </div>
-    </div>
-    <div class="repo-row">
-      <div>
-        <div class="repo-name">design-tokens</div>
-        <div style="font-size:0.7rem; color:var(--text-dim); margin-top:2px;">Token Pipeline</div>
-      </div>
-      <div class="repo-desc">
-        <span class="check">✓</span> Style Dictionary v5 generates CSS custom properties &nbsp;
-        <span class="check">✓</span> Already outputs a Tailwind v4 <code>@theme</code> block &nbsp;
-        <span class="check">✓</span> Token naming follows v4 convention: <code>--color-primary-500</code>, <code>--spacing-lg</code> &nbsp;
-        <span class="check">✓</span> Two brands: <code>techem</code> + <code>bfwt</code> — both supported &nbsp;
-        <span class="warn">~</span> Legacy prefix: some tokens still use <code>--d3x-*</code>
+        <span class="check">✓</span> Tailwind v4.2.1 installed, <code>@tailwindcss/postcss</code> wired &nbsp;
+        <span class="check">✓</span> <code>@import "tailwindcss"</code> already in <code>brand-styles-core.scss</code> &nbsp;
+        <span class="check">✓</span> <code>@theme</code> block present with font tokens mapped &nbsp;
+        <span class="warn">~</span> 96 <code>.module.scss</code> files still active — components not yet migrated &nbsp;
+        <span class="cross">✗</span> Button, Avatar and all others: still SCSS-only, no Tailwind utilities yet
       </div>
     </div>
     <div class="repo-row">
       <div>
         <div class="repo-name">portal-frontend</div>
-        <div style="font-size:0.7rem; color:var(--text-dim); margin-top:2px;">Main App</div>
+        <div style="font-size:0.7rem; color:var(--text-dim); margin-top:2px;">Main App + monorepo</div>
       </div>
       <div class="repo-desc">
-        <span class="cross">✗</span> No Tailwind — pure SCSS modules &nbsp;
-        <span class="check">✓</span> Consumes ui-experience-kit components &nbsp;
-        <span class="warn">~</span> As we migrate ui-experience-kit, portal-frontend benefits automatically &nbsp;
-        <span class="warn">~</span> Own SCSS files are a separate migration — not today's scope
+        <span class="cross">✗</span> Consuming <code>@odp/ui-experience-kit@1.11.4</code> — the pre-Tailwind version &nbsp;
+        <span class="cross">✗</span> No Tailwind installed directly &nbsp;
+        <span class="warn">~</span> 219 <code>.module.scss</code> files across the monorepo &nbsp;
+        <span class="warn">~</span> Most disappear automatically once the kit migrates and portal bumps its version
       </div>
     </div>
   </div>
 
   <div class="three">
     <div class="c gc">
-      <h3>The Button is your proof</h3>
-      <p>Button already uses <code>clsx('inline-flex items-center rounded-md', styles.button, ...)</code> — mixing Tailwind utilities with SCSS. The pattern works. We just need to complete the migration per component.</p>
+      <h3>design-tokens is done</h3>
+      <p>The pipeline from Figma to CSS vars + <code>@theme</code> is fully working. v1.6.0 published. Designers update tokens in Figma and the output is immediately ready for Tailwind to consume.</p>
     </div>
     <div class="c ga">
-      <h3>The TODO is already written</h3>
-      <p>Inside <code>Button.module.scss</code> there's an existing comment: <em>"TODO: Replace with proper tailwind design tokens."</em> This was always the plan — today we do it.</p>
+      <h3>The bottleneck is the SCSS</h3>
+      <p>96 files in ui-experience-kit block the whole chain. Once migrated, publishing a new kit version automatically delivers the full Figma → app pipeline to portal-frontend.</p>
     </div>
     <div class="c gv">
-      <h3>96 files sounds like a lot</h3>
-      <p>At ~30 min per component with AI assistance, 3 devs working in parallel = done in one sprint. The Avatar is 22 lines of CSS. Most DS components are similarly compact.</p>
+      <h3>219 files → less work than it sounds</h3>
+      <p>Most of portal-frontend's 219 SCSS files are inherited through the kit. A kit version bump eliminates the majority. Only portal-specific SCSS needs direct migration.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 13: Vision ==================== -->
+<div class="slide" data-slide="12">
+  <div class="sl cyan">The goal</div>
+  <h2>Figma to production<br>one chain, zero manual sync</h2>
+  <p class="sub">When the migration is complete, a designer changes a color in Figma — and it flows automatically to every app. No developer manually updates a value. No version drift between design and code.</p>
+
+  <div style="display:flex; align-items:stretch; gap:0; margin-bottom:1.5rem; flex-wrap:wrap;">
+    <div style="flex:1; min-width:120px; padding:0.9rem 0.8rem; background:rgba(139,92,246,0.07); border:1px solid rgba(139,92,246,0.2); border-radius:12px 0 0 12px; text-align:center;">
+      <div style="font-size:0.6rem; font-weight:700; color:var(--violet); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.3rem;">Designers</div>
+      <div style="font-size:0.95rem; font-weight:800; color:var(--text-bright); margin-bottom:0.25rem;">Figma</div>
+      <div style="font-size:0.62rem; color:var(--text-dim); line-height:1.5;">Tokens Studio plugin<br>exports primitives.json</div>
+    </div>
+    <div style="display:flex; align-items:center; padding:0 0.3rem; color:var(--text-dim); font-size:1.2rem;">→</div>
+    <div style="flex:1; min-width:120px; padding:0.9rem 0.8rem; background:rgba(6,182,212,0.07); border:1px solid rgba(6,182,212,0.2); border-radius:0; text-align:center;">
+      <div style="font-size:0.6rem; font-weight:700; color:var(--cyan); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.3rem;">Token pipeline</div>
+      <div style="font-size:0.95rem; font-weight:800; color:var(--text-bright); margin-bottom:0.25rem;">design-tokens</div>
+      <div style="font-size:0.62rem; color:var(--text-dim); line-height:1.5;">Style Dictionary v5<br><code>:root</code> + <code>@theme</code> CSS</div>
+    </div>
+    <div style="display:flex; align-items:center; padding:0 0.3rem; color:var(--text-dim); font-size:1.2rem;">→</div>
+    <div style="flex:1; min-width:120px; padding:0.9rem 0.8rem; background:rgba(16,185,129,0.07); border:1px solid rgba(16,185,129,0.2); border-radius:0; text-align:center;">
+      <div style="font-size:0.6rem; font-weight:700; color:var(--emerald); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.3rem;">Design System</div>
+      <div style="font-size:0.95rem; font-weight:800; color:var(--text-bright); margin-bottom:0.25rem;">ui-experience-kit</div>
+      <div style="font-size:0.62rem; color:var(--text-dim); line-height:1.5;">Tailwind v4 utilities<br>zero SCSS</div>
+    </div>
+    <div style="display:flex; align-items:center; padding:0 0.3rem; color:var(--text-dim); font-size:1.2rem;">→</div>
+    <div style="flex:1; min-width:120px; padding:0.9rem 0.8rem; background:rgba(249,115,22,0.07); border:1px solid rgba(249,115,22,0.2); border-radius:0 12px 12px 0; text-align:center;">
+      <div style="font-size:0.6rem; font-weight:700; color:var(--orange); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.3rem;">Products</div>
+      <div style="font-size:0.95rem; font-weight:800; color:var(--text-bright); margin-bottom:0.25rem;">portal-frontend</div>
+      <div style="font-size:0.62rem; color:var(--text-dim); line-height:1.5;">+ all apps<br>auto-updated on kit release</div>
+    </div>
+  </div>
+
+  <div class="three">
+    <div class="c gc">
+      <h3><span class="check">✓</span> Figma → design-tokens</h3>
+      <p><strong style="color:var(--text-bright);">Done.</strong> v1.6.0 published. Designers export from Tokens Studio, Style Dictionary v5 transforms to <code>:root + @theme</code>. Both <code>techem</code> and <code>bfwt</code> brands supported and generating correctly.</p>
+    </div>
+    <div class="c ga">
+      <h3><span class="warn">~</span> design-tokens → kit</h3>
+      <p>Tailwind v4 and <code>@import "tailwindcss"</code> are wired. <strong style="color:var(--text-bright);">The only blocker is the 96 SCSS files.</strong> This is exactly what today's exercise is attacking — directly and with AI.</p>
+    </div>
+    <div class="c gr">
+      <h3><span class="cross">✗</span> kit → portal-frontend</h3>
+      <p>portal-frontend is on <code>ui-experience-kit@1.11.4</code> — pre-Tailwind. Once the kit publishes a migrated version, portal-frontend gets the full Figma-to-app chain with a <strong style="color:var(--text-bright);">single version bump.</strong> No further migration work needed.</p>
     </div>
   </div>
 </div>
 
 <!-- ==================== 13: Exercise Format ==================== -->
-<div class="slide" data-slide="12">
+<div class="slide" data-slide="13">
   <div class="sl pink">Exercise — 40 min</div>
   <h2>Your turn: 3 groups,<br>1 component each</h2>
   <p class="sub">No live demo — you're the ones running the AI. Each group gets a real component to migrate from SCSS to Tailwind v4. Use whatever AI tool you prefer.</p>
@@ -969,7 +1016,7 @@ grep -rn <span class="str">"styles\."</span> src/YourComponent/
 </div>
 
 <!-- ==================== 14: Group Assignments ==================== -->
-<div class="slide" data-slide="13">
+<div class="slide" data-slide="14">
   <div class="sl violet">Groups</div>
   <h2>Which component<br>is yours?</h2>
   <p class="sub">Complexity increases from left to right. If Group 1 finishes early, help Group 2. If Group 3 is stuck, focus on the <code>primary</code> variant only — that's already the most valuable.</p>
@@ -1043,7 +1090,7 @@ grep -rn <span class="str">"styles\."</span> src/YourComponent/
 </div>
 
 <!-- ==================== 15: Context File ==================== -->
-<div class="slide" data-slide="14">
+<div class="slide" data-slide="15">
   <div class="sl cyan">The context</div>
   <h2>What to give<br>your AI tool</h2>
   <p class="sub">Open <code>EXERCISE.md</code> from the repo root. Copy the prompt block, then append your component files. Works the same way with Claude, Copilot, or any chat AI.</p>
@@ -1119,7 +1166,7 @@ Use the hover:not-disabled: variant."</span></div>
 </div>
 
 <!-- ==================== 16: Share & Compare ==================== -->
-<div class="slide" data-slide="15">
+<div class="slide" data-slide="16">
   <div class="sl violet">Debrief — 15 min</div>
   <h2>Show your diff.<br>What did the AI get right?</h2>
   <p class="sub">Each group has ~5 minutes. Show the before/after, what the AI nailed, what it missed, and what needed manual correction. Then we compare Claude vs Copilot.</p>
@@ -1187,7 +1234,7 @@ find src -name <span class="str">"*.module.scss"</span> | wc -l</div>
 </div>
 
 <!-- ==================== 17: Button — Hybrid ==================== -->
-<div class="slide" data-slide="16">
+<div class="slide" data-slide="17">
   <div class="sl amber">Real complexity</div>
   <h2>The Button: hybrid done right<br>and what's left</h2>
   <p class="sub">Button is the most complex component to migrate — but it's also the most valuable proof that this approach works. It's already halfway there.</p>
@@ -1260,7 +1307,7 @@ find src -name <span class="str">"*.module.scss"</span> | wc -l</div>
 </div>
 
 <!-- ==================== 18: Resources ==================== -->
-<div class="slide" data-slide="17">
+<div class="slide" data-slide="18">
   <div class="sl cyan">Wrap-up</div>
   <h2>Key takeaways<br>+ concrete next steps</h2>
 
