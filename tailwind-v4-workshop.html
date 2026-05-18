@@ -305,16 +305,20 @@
         <div><h4>Our repos: where we stand</h4><p>ui-experience-kit, design-tokens, portal-frontend</p></div>
       </div>
       <div class="agenda-item">
-        <div><div class="agenda-time">2:05</div><div style="font-size:0.6rem;color:var(--pink);">25 min</div></div>
-        <div><h4>Live demo: Avatar migration</h4><p>Real DS component, AI-assisted, step by step</p></div>
+        <div><div class="agenda-time">2:05</div><div style="font-size:0.6rem;color:var(--pink);">10 min</div></div>
+        <div><h4>Exercise setup</h4><p>Groups, assignments, context file</p></div>
       </div>
       <div class="agenda-item">
-        <div><div class="agenda-time">2:30</div><div style="font-size:0.6rem;color:var(--violet);">15 min</div></div>
-        <div><h4>You try it</h4><p>Pick any component, run the prompt, show your diff</p></div>
+        <div><div class="agenda-time">2:15</div><div style="font-size:0.6rem;color:var(--emerald);">40 min</div></div>
+        <div><h4>AI migration sprint</h4><p>3 groups, 1 component each — Claude or Copilot</p></div>
       </div>
       <div class="agenda-item">
-        <div><div class="agenda-time">2:45</div><div style="font-size:0.6rem;color:var(--text-dim);">15 min</div></div>
-        <div><h4>Q&A + Resources</h4><p>Discuss, share results, close</p></div>
+        <div><div class="agenda-time">2:55</div><div style="font-size:0.6rem;color:var(--violet);">15 min</div></div>
+        <div><h4>Share & compare</h4><p>Each group presents their diff, Claude vs Copilot</p></div>
+      </div>
+      <div class="agenda-item">
+        <div><div class="agenda-time">3:10</div><div style="font-size:0.6rem;color:var(--text-dim);">5 min</div></div>
+        <div><h4>Q&A + Resources</h4><p>Discuss, close</p></div>
       </div>
     </div>
   </div>
@@ -902,235 +906,288 @@
   </div>
 </div>
 
-<!-- ==================== 13: Exercise Intro ==================== -->
+<!-- ==================== 13: Exercise Format ==================== -->
 <div class="slide" data-slide="12">
-  <div class="sl pink">Exercise</div>
-  <h2>Migrating Avatar.tsx<br>from SCSS to Tailwind v4</h2>
-  <p class="sub">Avatar is the perfect starting component: small, self-contained, uses CSS vars for theming, and covers the key patterns you'll see across all 96 files.</p>
+  <div class="sl pink">Exercise — 40 min</div>
+  <h2>Your turn: 3 groups,<br>1 component each</h2>
+  <p class="sub">No live demo — you're the ones running the AI. Each group gets a real component to migrate from SCSS to Tailwind v4. Use whatever AI tool you prefer.</p>
 
   <div class="two">
     <div>
-      <div class="c gr" style="margin-bottom:0.8rem;">
-        <h3>The full Avatar.module.scss (22 lines)</h3>
-        <div class="code" style="margin-top:0.6rem; font-size:0.65rem; line-height:1.7;"><span class="ty">.AvatarRoot</span> {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  vertical-align: middle;
-  overflow: hidden;
-  user-select: none;
-  border-radius: 100%;
-  background-color: <span class="fn">var</span>(<span class="ty">--d3x-white</span>);
-}
-<span class="ty">.sm</span>  { width: <span class="num">3rem</span>;   height: <span class="num">3rem</span>; }
-<span class="ty">.md</span>  { width: <span class="num">3.5rem</span>; height: <span class="num">3.5rem</span>; }
-<span class="ty">.lg</span>  { width: <span class="num">4rem</span>;   height: <span class="num">4rem</span>; }
-<span class="ty">.AvatarImage</span> {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  border-radius: inherit;
-}
-<span class="ty">.AvatarFallback</span> {
-  width: 100%; height: 100%;
-  display: flex;
-  align-items: center; justify-content: center;
-  background-color: <span class="fn">var</span>(<span class="ty">--d3x-gray-700</span>);
-  color: <span class="fn">var</span>(<span class="ty">--d3x-white</span>);
-  font-size: <span class="num">1.5rem</span>; font-weight: <span class="num">500</span>;
-  line-height: <span class="num">1</span>;
-}</div>
-      </div>
-    </div>
-    <div>
       <div class="c gc" style="margin-bottom:0.8rem;">
-        <h3>What patterns this covers</h3>
-        <ul>
-          <li>CSS custom property tokens → Tailwind arbitrary values</li>
-          <li>Conditional size classes (<code>.sm</code> / <code>.md</code> / <code>.lg</code>) → lookup object</li>
-          <li><code>border-radius: inherit</code> → <code>rounded-[inherit]</code></li>
-          <li>Removing the <code>styles</code> import entirely</li>
-          <li>Using <code>clsx()</code> for composition (already in our codebase)</li>
-        </ul>
-      </div>
-      <div class="c gv" style="margin-bottom:0.8rem;">
-        <h3>Exercise flow</h3>
+        <h3>How it works</h3>
         <div class="steps" style="margin-top:0.5rem;">
           <div class="step">
             <div class="step-n" style="background:rgba(236,72,153,0.12); color:var(--pink);">1</div>
-            <div><h4>Run the AI prompt</h4><p>Paste Avatar.tsx + Avatar.module.scss into Claude</p></div>
+            <div><h4>Form your group</h4><p>~3 people — mix Claude and Copilot users if you can</p></div>
           </div>
           <div class="step">
             <div class="step-n" style="background:rgba(236,72,153,0.12); color:var(--pink);">2</div>
-            <div><h4>Review the diff</h4><p>Did every style survive? Any edge cases missed?</p></div>
+            <div><h4>Open your component</h4><p>Navigate to the assigned .tsx + .module.scss files in the repo</p></div>
           </div>
           <div class="step">
             <div class="step-n" style="background:rgba(236,72,153,0.12); color:var(--pink);">3</div>
-            <div><h4>Validate</h4><p>Type-check + visual check all 3 sizes + fallback</p></div>
+            <div><h4>Use EXERCISE.md</h4><p>Copy the prompt block and append your files — works with any AI</p></div>
+          </div>
+          <div class="step">
+            <div class="step-n" style="background:rgba(236,72,153,0.12); color:var(--pink);">4</div>
+            <div><h4>Iterate & validate</h4><p>Review the output, test it, fix edge cases with follow-up prompts</p></div>
+          </div>
+          <div class="step">
+            <div class="step-n" style="background:rgba(236,72,153,0.12); color:var(--pink);">5</div>
+            <div><h4>Present your diff</h4><p>At the end, each group shows what the AI produced and what surprised them</p></div>
           </div>
         </div>
       </div>
     </div>
+    <div>
+      <div class="c gv" style="margin-bottom:0.8rem;">
+        <h3>Use whatever AI tool you have</h3>
+        <ul>
+          <li><strong style="color:var(--text-bright);">Claude Code</strong> (CLI) — run <code>claude</code> in the repo root</li>
+          <li><strong style="color:var(--text-bright);">Claude.ai</strong> — paste context + component files in chat</li>
+          <li><strong style="color:var(--text-bright);">Copilot Chat</strong> (VS Code) — attach both files, paste context</li>
+          <li><strong style="color:var(--text-bright);">Copilot inline</strong> — select SCSS, ask to rewrite</li>
+        </ul>
+        <p style="margin-top:0.6rem; color:var(--amber);">Don't switch tools — use the one you know. The comparison happens when you share results.</p>
+      </div>
+      <div class="c ge">
+        <h3>Success criteria</h3>
+        <ul>
+          <li>The <code>.module.scss</code> file is gone</li>
+          <li>No <code>styles.*</code> references in the .tsx</li>
+          <li>No <code>import styles</code> line</li>
+          <li>TypeScript compiles without errors</li>
+          <li>Component looks visually identical</li>
+        </ul>
+        <div class="code" style="margin-top:0.5rem; font-size:0.65rem;"><span class="cm"># Quick check in terminal</span>
+grep -rn <span class="str">"styles\."</span> src/YourComponent/
+<span class="cm"># → zero results = done ✓</span></div>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- ==================== 14: The Prompt ==================== -->
+<!-- ==================== 14: Group Assignments ==================== -->
 <div class="slide" data-slide="13">
-  <div class="sl violet">The prompt</div>
-  <h2>Copy-paste this into<br>Claude Code or claude.ai</h2>
+  <div class="sl violet">Groups</div>
+  <h2>Which component<br>is yours?</h2>
+  <p class="sub">Complexity increases from left to right. If Group 1 finishes early, help Group 2. If Group 3 is stuck, focus on the <code>primary</code> variant only — that's already the most valuable.</p>
+
+  <div class="three">
+    <div class="c gc">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.6rem;">
+        <h3>Group 1</h3>
+        <span class="tag e">Simple</span>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:700; color:var(--cyan); margin-bottom:0.6rem;">Avatar</div>
+      <ul>
+        <li>~22 lines of SCSS</li>
+        <li>3 size variants: sm / md / lg</li>
+        <li>2 sub-components: Image + Fallback</li>
+        <li>Tokens: <code>--d3x-white</code>, <code>--d3x-gray-700</code></li>
+        <li>No interactive states</li>
+      </ul>
+      <div style="margin-top:0.7rem; padding:0.5rem 0.7rem; background:rgba(6,182,212,0.07); border-radius:7px; font-size:0.72rem; color:var(--text-dim);">
+        <strong style="color:var(--text-bright);">Key challenge:</strong> convert <code>styles[size]</code> to a const lookup object
+      </div>
+      <div class="code" style="margin-top:0.6rem; font-size:0.62rem;">src/components/Avatar/
+├── Avatar.tsx
+└── Avatar.module.scss</div>
+    </div>
+    <div class="c ga">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.6rem;">
+        <h3>Group 2</h3>
+        <span class="tag a">Medium</span>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:700; color:var(--amber); margin-bottom:0.6rem;">Badge / Tag</div>
+      <ul>
+        <li>Multiple color variants (status, brand…)</li>
+        <li>Optional icon + size props</li>
+        <li>Color tokens from design system</li>
+        <li>Minimal interactive states</li>
+        <li>Good variant → color mapping exercise</li>
+      </ul>
+      <div style="margin-top:0.7rem; padding:0.5rem 0.7rem; background:rgba(245,158,11,0.07); border-radius:7px; font-size:0.72rem; color:var(--text-dim);">
+        <strong style="color:var(--text-bright);">Key challenge:</strong> build a clean variant → token mapping object
+      </div>
+      <div class="code" style="margin-top:0.6rem; font-size:0.62rem;">src/components/Badge/
+├── Badge.tsx
+└── Badge.module.scss</div>
+    </div>
+    <div class="c gr">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.6rem;">
+        <h3>Group 3</h3>
+        <span class="tag r">Complex</span>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:700; color:var(--rose); margin-bottom:0.6rem;">Button</div>
+      <ul>
+        <li>Already partially migrated (hybrid)</li>
+        <li>6 variants: primary, secondary, tertiary…</li>
+        <li>Hover, focus, disabled states per variant</li>
+        <li>Uses <code>:hover:not(:disabled)</code> pattern</li>
+        <li>The highest-value component in the DS</li>
+      </ul>
+      <div style="margin-top:0.7rem; padding:0.5rem 0.7rem; background:rgba(244,63,94,0.07); border-radius:7px; font-size:0.72rem; color:var(--text-dim);">
+        <strong style="color:var(--text-bright);">Key challenge:</strong> <code>not-disabled:</code> + multi-variant lookup object
+      </div>
+      <div class="code" style="margin-top:0.6rem; font-size:0.62rem;">src/components/Button/
+├── Button.tsx
+└── Button.module.scss</div>
+    </div>
+  </div>
+
+  <div style="margin-top:1.2rem; padding:0.75rem 1.2rem; background:rgba(139,92,246,0.05); border:1px solid rgba(139,92,246,0.15); border-radius:10px; font-size:0.78rem; color:var(--text-dim);">
+    <strong style="color:var(--text-bright);">Tip:</strong> Within your group, different people can use different tools on the same component. The comparison at the end is part of the learning.
+  </div>
+</div>
+
+<!-- ==================== 15: Context File ==================== -->
+<div class="slide" data-slide="14">
+  <div class="sl cyan">The context</div>
+  <h2>What to give<br>your AI tool</h2>
+  <p class="sub">Open <code>EXERCISE.md</code> from the repo root. Copy the prompt block, then append your component files. Works the same way with Claude, Copilot, or any chat AI.</p>
 
   <div class="two">
     <div>
-      <div class="code" style="font-size:0.61rem; line-height:1.75;"><span class="cm">You are helping migrate a component from the Techem</span>
-<span class="cm">Design System (ui-experience-kit) from SCSS Modules</span>
-<span class="cm">to Tailwind CSS v4.</span>
+      <div class="code" style="font-size:0.6rem; line-height:1.72;">You are migrating a component from the Techem Design
+System (<span class="ty">ui-experience-kit</span>) from SCSS Modules to
+Tailwind CSS v4.
 
-<span class="str">Stack:</span>
-<span class="cm">- React + TypeScript + Radix UI primitives</span>
-<span class="cm">- clsx() for conditional class composition</span>
-<span class="cm">- SCSS Modules → Tailwind v4 utility classes</span>
-<span class="cm">- Tokens are CSS custom properties (no SCSS vars)</span>
-<span class="cm">- Goal: identical visual output, zero SCSS left</span>
+<span class="str">Stack:</span> React + TypeScript + Radix UI
+<span class="cm">- clsx() for class composition (never cn())</span>
+<span class="cm">- Tokens are CSS custom properties on :root</span>
+<span class="cm">- Tailwind v4 already wired — only migrate the classes</span>
 
 <span class="str">Steps:</span>
-<span class="cm">1. Analyze the SCSS — understand all styles</span>
-<span class="cm">2. Show a mapping table: SCSS rule → Tailwind</span>
-<span class="cm">3. Rewrite the TSX with utility classes inline</span>
-<span class="cm">4. Remove the SCSS import and styles.* references</span>
-<span class="cm">5. For conditional variants (sm/md/lg), use a</span>
-<span class="cm">   const lookup object, not SCSS class refs</span>
-<span class="cm">6. For things you can't express as utilities,</span>
-<span class="cm">   keep a small CSS block with a TODO comment</span>
+<span class="cm">1. Show a mapping table: SCSS rule → Tailwind class</span>
+<span class="cm">2. Rewrite the .tsx with inline utility classes</span>
+<span class="cm">3. Remove the SCSS import and all styles.* references</span>
+<span class="cm">4. For variants (size/type), use a const lookup object</span>
+<span class="cm">5. Flag anything you can't express as utilities</span>
 
 <span class="str">Rules:</span>
-<span class="cm">- Use clsx() (not cn()) — already imported</span>
 <span class="cm">- Use bg-[--d3x-white] for CSS var tokens</span>
-<span class="cm">- Or bg-[--color-primary-500] for token names</span>
-<span class="cm">- Map breakpoints to responsive prefixes</span>
-<span class="cm">- Preserve hover/focus/disabled with variants</span>
-<span class="cm">- Group: layout → sizing → color → typography</span>
-<span class="cm">- Flag unmappable selectors with a TODO</span>
+<span class="cm">- Use hover: focus: disabled: not-disabled: variants</span>
+<span class="cm">- Group: layout → sizing → color → typography → state</span>
+<span class="cm">- Goal: zero SCSS left, visually identical</span>
 
 <span class="str">--- Component (.tsx) ---</span>
-<span class="cm">[paste Avatar.tsx here]</span>
+<span class="cm">[paste here]</span>
 
 <span class="str">--- SCSS Module ---</span>
-<span class="cm">[paste Avatar.module.scss here]</span>
+<span class="cm">[paste here]</span>
 
-<span class="str">--- Available CSS tokens (subset) ---</span>
-<span class="cm">--d3x-white, --d3x-gray-700</span>
-<span class="cm">--color-primary-500, --color-primary-600</span>
-<span class="cm">--color-primary-100, --color-white</span>
-<span class="cm">--radius-size-sm, --radius-size-lg</span>
-<span class="cm">--spacing-xs, --spacing-sm, --spacing-md, --spacing-lg</span></div>
+<span class="str">--- Available tokens ---</span>
+<span class="ty">--color-primary-500</span>, <span class="ty">--color-primary-600</span>
+<span class="ty">--color-white</span>, <span class="ty">--d3x-white</span>, <span class="ty">--d3x-gray-700</span>
+<span class="ty">--spacing-xs/sm/md/lg</span>
+<span class="ty">--radius-size-sm/md/lg/full</span></div>
     </div>
     <div>
       <div class="c gc" style="margin-bottom:0.8rem;">
-        <h3>Tips for better results</h3>
-        <ul>
-          <li>Paste the actual token list from design-tokens output — the AI maps exactly what you give it</li>
-          <li>For complex components (Button), do one variant at a time: primary first, then secondary, etc.</li>
-          <li>Ask for the mapping table first, validate it, then ask for the full rewrite</li>
-          <li>End with: "Does anything look visually different? What would you flag for manual review?"</li>
-        </ul>
+        <h3>Claude Code (CLI)</h3>
+        <div class="code" style="margin-top:0.5rem; font-size:0.65rem;"><span class="cm"># In the repo root</span>
+claude
+
+<span class="cm"># Option A — let it read the files</span>
+<span class="str">"Read Avatar.tsx and Avatar.module.scss,
+then migrate using the context in EXERCISE.md"</span>
+
+<span class="cm"># Option B — paste everything</span>
+<span class="str">"[paste context block + component files]"</span></div>
       </div>
       <div class="c gv" style="margin-bottom:0.8rem;">
-        <h3>Iteration prompt</h3>
-        <div class="code" style="margin-top:0.5rem; font-size:0.65rem;"><span class="cm">The .primary:hover:not(:disabled) state</span>
-<span class="cm">is missing from the Button migration.</span>
-<span class="cm">SCSS: &:hover:not(:disabled) { bg: var(--color-primary-600) }</span>
-<span class="cm">Add it using hover: and not-disabled: variants.</span></div>
+        <h3>Copilot Chat (VS Code)</h3>
+        <div class="code" style="margin-top:0.5rem; font-size:0.65rem;"><span class="cm"># Open both files in VS Code</span>
+<span class="cm"># Open Copilot Chat (Ctrl+Shift+I)</span>
+<span class="cm"># Attach files with @file:</span>
+
+<span class="str">"@file Avatar.tsx @file Avatar.module.scss
+Migrate this component to Tailwind v4.
+[paste context block]"</span></div>
       </div>
-      <div class="c go">
-        <h3>Validation checklist</h3>
+      <div class="c ga">
+        <h3>When the AI misses something</h3>
+        <p style="font-size:0.75rem; margin-bottom:0.4rem;">Be specific — name the rule and the fix:</p>
+        <div class="code" style="font-size:0.62rem;"><span class="str">"The hover:not(:disabled) state is missing.
+SCSS: &:hover:not(:disabled) { bg: ... }
+Use the hover:not-disabled: variant."</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 16: Share & Compare ==================== -->
+<div class="slide" data-slide="15">
+  <div class="sl violet">Debrief — 15 min</div>
+  <h2>Show your diff.<br>What did the AI get right?</h2>
+  <p class="sub">Each group has ~5 minutes. Show the before/after, what the AI nailed, what it missed, and what needed manual correction. Then we compare Claude vs Copilot.</p>
+
+  <div class="two">
+    <div>
+      <div class="c gc" style="margin-bottom:0.8rem;">
+        <h3>What to show (5 min per group)</h3>
+        <div class="steps" style="margin-top:0.5rem;">
+          <div class="step">
+            <div class="step-n" style="background:rgba(6,182,212,0.12); color:var(--cyan);">1</div>
+            <div><h4>Which tool + first prompt</h4><p>What did you give the AI as initial context?</p></div>
+          </div>
+          <div class="step">
+            <div class="step-n" style="background:rgba(6,182,212,0.12); color:var(--cyan);">2</div>
+            <div><h4>First output</h4><p>Was it close? What was immediately wrong?</p></div>
+          </div>
+          <div class="step">
+            <div class="step-n" style="background:rgba(6,182,212,0.12); color:var(--cyan);">3</div>
+            <div><h4>What you had to fix</h4><p>Edge cases, missing states, wrong token names</p></div>
+          </div>
+          <div class="step">
+            <div class="step-n" style="background:rgba(6,182,212,0.12); color:var(--cyan);">4</div>
+            <div><h4>Final verdict</h4><p>How many iterations? Would you trust it in a PR?</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="c gv" style="margin-bottom:0.8rem;">
+        <h3>Claude vs Copilot — compare</h3>
         <ul>
-          <li><code>grep -r "styles\." src/Avatar/</code> → zero results</li>
-          <li><code>grep -r ".module.scss" src/Avatar/</code> → zero results</li>
-          <li><code>npm run type-check</code> passes clean</li>
-          <li>Visual: all 3 sizes, image mode, fallback mode</li>
+          <li>Did it understand the token naming convention?</li>
+          <li>Did it produce a mapping table or jump straight to code?</li>
+          <li>Did it catch <code>:hover:not(:disabled)</code> patterns?</li>
+          <li>Did it use a lookup object or inline conditionals?</li>
+          <li>Did it ask questions or just go for it?</li>
+          <li>How different were the two outputs for the same component?</li>
         </ul>
       </div>
+      <div class="c ga" style="margin-bottom:0.8rem;">
+        <h3>The broader takeaway</h3>
+        <ul>
+          <li>AI is great at <em>mechanical</em> translation — SCSS rules map 1:1</li>
+          <li>Context quality directly determines output quality</li>
+          <li>Edge cases (composed selectors, disabled states) need iteration</li>
+          <li>One component: ~5–10 min with AI vs 30–60 min by hand</li>
+          <li>96 files × that delta = real sprint savings</li>
+        </ul>
+      </div>
+      <div class="c ge">
+        <h3>Validation — run in the repo</h3>
+        <div class="code" style="margin-top:0.5rem; font-size:0.65rem;"><span class="cm"># No SCSS refs remain</span>
+grep -rn <span class="str">"styles\."</span> src/Avatar/
+grep -rn <span class="str">".module.scss"</span> src/Avatar/
+
+<span class="cm"># TypeScript check</span>
+pnpm run type-check
+
+<span class="cm"># How many files are left?</span>
+find src -name <span class="str">"*.module.scss"</span> | wc -l</div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ==================== 15: Live Demo ==================== -->
-<div class="slide" data-slide="14">
-  <div class="sl emerald">Live demo</div>
-  <h2>Avatar: before & after<br>real code, real component</h2>
-  <p class="sub">Let's run the prompt together. <strong style="color:var(--text-bright);">Open Claude Code</strong> → paste the prompt → paste Avatar.tsx + Avatar.module.scss → watch it work.</p>
-
-  <div class="diff">
-    <div>
-      <div class="diff-label" style="color:var(--rose);">Avatar.tsx — before (uses styles.*)</div>
-      <div class="code" style="font-size:0.61rem; line-height:1.65;"><span class="kw">import</span> * <span class="kw">as</span> ReactAvatar <span class="kw">from</span> <span class="str">'@radix-ui/react-avatar'</span>
-<span class="op">import</span> styles <span class="op">from</span> <span class="str">'./Avatar.module.scss'</span>   <span class="cm">← DELETE</span>
-<span class="kw">import</span> clsx <span class="kw">from</span> <span class="str">'clsx'</span>
-
-<span class="kw">export function</span> <span class="fn">Avatar</span>({ className, src, alt,
-  fallback, delayMs = <span class="num">600</span>, size = <span class="str">'md'</span> }) {
-  <span class="kw">return</span> (
-    &lt;<span class="ty">ReactAvatar.Root</span>
-      <span class="kw">className</span>={<span class="fn">clsx</span>(
-        <span class="op">styles.AvatarRoot</span>,   <span class="cm">← REPLACE</span>
-        <span class="op">styles[size]</span>          <span class="cm">← REPLACE</span>
-      )}&gt;
-      &lt;<span class="ty">ReactAvatar.Image</span>
-        <span class="kw">className</span>={<span class="fn">clsx</span>(<span class="op">styles.AvatarImage</span>, className)}  <span class="cm">← REPLACE</span>
-        src={src} alt={alt} /&gt;
-      &lt;<span class="ty">ReactAvatar.Fallback</span>
-        <span class="kw">className</span>={<span class="fn">clsx</span>(<span class="op">styles.AvatarFallback</span>, className)} <span class="cm">← REPLACE</span>
-        delayMs={delayMs}&gt;
-        {fallback}
-      &lt;/<span class="ty">ReactAvatar.Fallback</span>&gt;
-    &lt;/<span class="ty">ReactAvatar.Root</span>&gt;
-  )
-}</div>
-    </div>
-    <div>
-      <div class="diff-label" style="color:var(--emerald);">Avatar.tsx — after (zero SCSS)</div>
-      <div class="code" style="font-size:0.61rem; line-height:1.65;"><span class="kw">import</span> * <span class="kw">as</span> ReactAvatar <span class="kw">from</span> <span class="str">'@radix-ui/react-avatar'</span>
-<span class="cm">// No SCSS import ✓</span>
-<span class="kw">import</span> clsx <span class="kw">from</span> <span class="str">'clsx'</span>
-
-<span class="kw">const</span> sizeClasses = {
-  <span class="str">sm</span>: <span class="str">'w-12 h-12'</span>,
-  <span class="str">md</span>: <span class="str">'w-14 h-14'</span>,
-  <span class="str">lg</span>: <span class="str">'w-16 h-16'</span>,
-}
-
-<span class="kw">export function</span> <span class="fn">Avatar</span>({ className, src, alt,
-  fallback, delayMs = <span class="num">600</span>, size = <span class="str">'md'</span> }) {
-  <span class="kw">return</span> (
-    &lt;<span class="ty">ReactAvatar.Root</span> <span class="kw">className</span>={<span class="fn">clsx</span>(
-      <span class="str">'inline-flex items-center justify-center'</span>,
-      <span class="str">'align-middle overflow-hidden select-none'</span>,
-      <span class="str">'rounded-full bg-[--d3x-white]'</span>,
-      sizeClasses[size],
-    )}&gt;
-      &lt;<span class="ty">ReactAvatar.Image</span>
-        <span class="kw">className</span>={<span class="fn">clsx</span>(
-          <span class="str">'w-full h-full object-cover rounded-[inherit]'</span>,
-          className,
-        )}
-        src={src} alt={alt} /&gt;
-      &lt;<span class="ty">ReactAvatar.Fallback</span>
-        <span class="kw">className</span>={<span class="fn">clsx</span>(
-          <span class="str">'w-full h-full flex items-center justify-center'</span>,
-          <span class="str">'bg-[--d3x-gray-700] text-[--d3x-white]'</span>,
-          <span class="str">'text-2xl leading-none font-medium'</span>,
-          className,
-        )}
-        delayMs={delayMs}&gt;{fallback}
-      &lt;/<span class="ty">ReactAvatar.Fallback</span>&gt;
-    &lt;/<span class="ty">ReactAvatar.Root</span>&gt;
-  )
-}</div>
-    </div>
-  </div>
-</div>
-
-<!-- ==================== 16: Button — Hybrid ==================== -->
-<div class="slide" data-slide="15">
+<!-- ==================== 17: Button — Hybrid ==================== -->
+<div class="slide" data-slide="16">
   <div class="sl amber">Real complexity</div>
   <h2>The Button: hybrid done right<br>and what's left</h2>
   <p class="sub">Button is the most complex component to migrate — but it's also the most valuable proof that this approach works. It's already halfway there.</p>
@@ -1202,8 +1259,8 @@
   </div>
 </div>
 
-<!-- ==================== 17: Resources ==================== -->
-<div class="slide" data-slide="16">
+<!-- ==================== 18: Resources ==================== -->
+<div class="slide" data-slide="17">
   <div class="sl cyan">Wrap-up</div>
   <h2>Key takeaways<br>+ concrete next steps</h2>
 
