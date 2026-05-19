@@ -1367,6 +1367,68 @@ find src -name <span class="str">"*.module.scss"</span> | wc -l</div>
   </div>
 </div>
 
+<!-- ==================== 20: Q&A ==================== -->
+<div class="slide" data-slide="19">
+  <div class="sl cyan">Q&A</div>
+  <h2>Questions?</h2>
+  <p class="sub">Anything from the theory, the exercise, or the migration ahead — open floor.</p>
+
+  <div class="three">
+    <div class="c gc">
+      <h3>Things worth discussing</h3>
+      <ul>
+        <li>How do we coordinate the 96-file migration across the team?</li>
+        <li>Which components are highest priority for the portal?</li>
+        <li>How do we validate visually at scale?</li>
+        <li>What's the release strategy — one big PR or per component?</li>
+        <li>Do we tackle Button before or after simpler components?</li>
+      </ul>
+    </div>
+    <div class="c gv">
+      <h3>Quick reference</h3>
+      <ul>
+        <li><span class="tag v">@theme inline</span> — tokens resolve at runtime, no self-reference</li>
+        <li><span class="tag v">bg-[--token]</span> — arbitrary CSS var, always works</li>
+        <li><span class="tag v">not-disabled:</span> — replaces <code>:hover:not(:disabled)</code></li>
+        <li><span class="tag v">@reference</span> — context for @apply across packages</li>
+        <li><span class="tag v">find src -name "*.module.scss" | wc -l</span> — track progress</li>
+      </ul>
+    </div>
+    <div class="c ga">
+      <h3>After today</h3>
+      <ul>
+        <li>Pick a component from the list and open a PR</li>
+        <li>Use <code>EXERCISE.md</code> — the prompt works outside the workshop too</li>
+        <li>Share the diff in Slack so others can learn from it</li>
+        <li>Each merged component is one step closer to closing the Figma → app chain</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 21: Thank you ==================== -->
+<div class="slide" data-slide="20">
+  <div class="sl violet">Techem Frontend Guild</div>
+  <h1 class="grad">Thank you.</h1>
+  <p class="sub" style="max-width:560px;">For your time, your questions, and for doing the actual work.<br>Every component migrated today is real progress.</p>
+
+  <div style="margin-top:2rem; display:flex; flex-direction:column; gap:0.6rem;">
+    <div style="font-size:0.8rem; color:var(--text-dim);">Slides & exercise context →
+      <strong style="color:var(--text-bright);">github.com/jlucas-alves/tailwind-v4-workshop-techem</strong>
+    </div>
+    <div style="font-size:0.8rem; color:var(--text-dim);">Tailwind v4 docs →
+      <strong style="color:var(--text-bright);">tailwindcss.com/docs</strong>
+    </div>
+    <div style="font-size:0.8rem; color:var(--text-dim);">Sandbox →
+      <strong style="color:var(--text-bright);">play.tailwindcss.com</strong>
+    </div>
+  </div>
+
+  <div style="margin-top:2.5rem; font-size:0.8rem; color:var(--text-dim);">
+    Presented by <strong style="color:var(--text-bright);">Lucas Alves</strong>
+  </div>
+</div>
+
 </div><!-- /deck -->
 
 <div class="dots" id="dots"></div>
