@@ -418,7 +418,6 @@
         <li>Rewrote the engine in <strong style="color:var(--violet);">Rust</strong> via Lightning CSS</li>
         <li>CSS-first config: <span class="tag v">@theme {}</span></li>
         <li>New import: <span class="tag v">@import "tailwindcss"</span></li>
-        <li>Built-in <span class="tag v">@tailwindcss/vite</span> plugin</li>
         <li>Auto content detection from import graph</li>
         <li>Every token → CSS custom property automatically</li>
         <li>P3 color gamut on all palette colors</li>
@@ -728,42 +727,24 @@
   </div>
 </div>
 
-<!-- ==================== 10: Vite Plugin ==================== -->
+<!-- ==================== 10: Our Setup ==================== -->
 <div class="slide" data-slide="9">
   <div class="sl blue">DX</div>
-  <h2>First-class Vite plugin<br>Zero-config setup</h2>
-  <p class="sub">The Vite plugin understands the module graph and offers better HMR granularity than PostCSS. For new projects, total setup is 3 lines.</p>
+  <h2>Tailwind is already wired<br>in the kit</h2>
+  <p class="sub">The tooling setup is done. The migration is about replacing SCSS files with utility classes — not about changing the build config.</p>
 
   <div class="two">
     <div>
-      <div class="diff-label" style="color:var(--rose); margin-bottom:0.4rem;">PostCSS setup (what we have now)</div>
-      <div class="code" style="margin-bottom:1rem; font-size:0.7rem;"><span class="cm">// postcss.config.mjs — ui-experience-kit</span>
+      <div class="diff-label" style="color:var(--emerald); margin-bottom:0.4rem;">Our setup — postcss.config.mjs</div>
+      <div class="code" style="font-size:0.7rem;"><span class="cm">// ui-experience-kit/postcss.config.mjs</span>
 <span class="kw">export default</span> {
   <span class="ty">plugins</span>: {
     <span class="str">'@tailwindcss/postcss'</span>: {}
   }
 }
-<span class="cm">// Works fine — this is valid v4 config</span></div>
-
-      <div class="diff-label" style="color:var(--emerald); margin-bottom:0.4rem;">Vite plugin (if we switch)</div>
-      <div class="code" style="font-size:0.7rem;"><span class="cm">// vite.config.ts</span>
-<span class="kw">import</span> tailwindcss <span class="kw">from</span> <span class="str">'@tailwindcss/vite'</span>
-
-<span class="kw">export default</span> {
-  <span class="ty">plugins</span>: [<span class="fn">tailwindcss</span>()]
-}
-<span class="cm">// Drop postcss.config.mjs entirely</span></div>
+<span class="cm">// @tailwindcss/postcss v4.2.1 — already in package.json</span></div>
     </div>
     <div>
-      <div class="c gc" style="margin-bottom:0.8rem;">
-        <h3>Why the Vite plugin wins</h3>
-        <ul>
-          <li>Knows Vite's module graph — only reprocesses what changed</li>
-          <li>Better HMR granularity than the PostCSS path</li>
-          <li>No PostCSS overhead in the hot-reload critical path</li>
-          <li>Works with Vite SSR, library mode, Storybook</li>
-        </ul>
-      </div>
       <div class="c ga" style="margin-bottom:0.8rem;">
         <h3>We're already 90% there</h3>
         <p><span class="tag a">ui-experience-kit</span> already has <span class="tag e">@tailwindcss/postcss</span> v4.2.1 in package.json and a valid <span class="tag e">postcss.config.mjs</span>. The migration isn't about setup — it's about replacing the SCSS files with utility classes.</p>
